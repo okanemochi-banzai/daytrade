@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daytrade Signal Board</title>
+<style>
+  :root {
+    --bg: #0b1220;
+    --panel: #151f33;
+    --panel-2: #1d2842;
+    --text: #e6edf3;
+    --muted: #8ca0b3;
+    --accent: #fbbf24;
+    --long: #10b981;
+    --short: #ef4444;
+    --neutral: #6b7280;
+    --border: #2a3654;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+  header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+  h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.02em; }
+  .timestamp { color: var(--muted); font-size: 13px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card h2 { margin: 0 0 12px 0; font-size: 14px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .big-number { font-size: 32px; font-weight: 700; margin: 8px 0; font-variant-numeric: tabular-nums; }
+  .sub { color: var(--muted); font-size: 14px; }
+  .badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+  .badge-long { background: rgba(16, 185, 129, 0.15); color: var(--long); }
+  .badge-short { background: rgba(239, 68, 68, 0.15); color: var(--short); }
+  .badge-neutral { background: rgba(107, 114, 128, 0.15); color: var(--neutral); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 500; }
+  .price { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+  .band-upper td { color: var(--short); }
+  .band-lower td { color: var(--long); }
+  .prev-close-row td { color: var(--accent); font-weight: 700; border-top: 2px solid var(--accent); border-bottom: 2px solid var(--accent); }
+  .rationale {
+    background: var(--panel-2);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 12px;
+    font-size: 14px;
+  }
+  .footer-note {
+    margin-top: 32px;
+    padding: 16px;
+    background: var(--panel);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .us-market { display: flex; gap: 16px; }
+  .us-market .item { flex: 1; }
+  .pct-pos { color: var(--long); }
+  .pct-neg { color: var(--short); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>📊 Daytrade Signal Board</h1>
+    <div class="timestamp">Updated: 2026-04-23 08:40 JST</div>
+  </header>
+
+  <!-- 最重要: 朝一鞘取りシグナル -->
+  <div class="card" style="margin-bottom: 20px;">
+    <h2>朝一先物鞘取りシグナル</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <div class="big-number"><span class="badge badge-long">鞘取りロング</span></div>
+        <div class="sub">
+          日経先物: <b>¥37,400</b> /
+          現物: <b>¥38,500</b>
+        </div>
+        <div class="sub" style="font-size: 16px; margin-top: 4px;">
+          現対: <b style="color: var(--accent);">-1,100円</b>
+          <span style="color: #ef4444; margin-left: 8px;">🔥 ハイボラ</span>
+        </div>
+      </div>
+    </div>
+    <div class="rationale">現対-1,100円。先物が現物より1,100円安い。鞘が閉じる方向（先物買い）を朝一で狙う。</div>
+  </div>
+
+  <div class="grid">
+    <!-- キリバン値幅 -->
+    <div class="card">
+      <h2>キリバン値幅（前日終値 ± N円）</h2>
+      <table>
+        <tbody>
+          
+        <tr class="band-upper">
+          <td>前日比 +1500</td>
+          <td class="price">¥40,000</td>
+        </tr>
+        <tr class="band-upper">
+          <td>前日比 +1000</td>
+          <td class="price">¥39,500</td>
+        </tr>
+        <tr class="band-upper">
+          <td>前日比 +500</td>
+          <td class="price">¥39,000</td>
+        </tr>
+        <tr class="band-lower">
+          <td>前日比 -500</td>
+          <td class="price">¥38,000</td>
+        </tr>
+        <tr class="band-lower">
+          <td>前日比 -1000</td>
+          <td class="price">¥37,500</td>
+        </tr>
+        <tr class="band-lower">
+          <td>前日比 -1500</td>
+          <td class="price">¥37,000</td>
+        </tr>
+          <tr class="prev-close-row">
+            <td>前日終値</td>
+            <td class="price">¥38,500</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="rationale" style="margin-top: 16px;">
+        機能しやすい相場（ハイボラ）。
+        ±500/1000/1500円が天底・レジサポとして意識される水準。
+      </div>
+    </div>
+
+    <!-- 株価キリバン節目 -->
+    <div class="card">
+      <h2>株価キリバン節目（1,000円単位）</h2>
+      <table>
+        <tbody>
+          <tr class="band-upper">
+            <td>レジスタンス</td>
+            <td class="price">¥39,000</td>
+          </tr>
+          <tr class="prev-close-row">
+            <td>現在値</td>
+            <td class="price">¥38,500</td>
+          </tr>
+          <tr class="band-lower">
+            <td>サポート</td>
+            <td class="price">¥38,000</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="rationale" style="margin-top: 16px;">
+        丸い数字（0円で終わる水準）は常にレジサポ候補。軟調相場ほど機能しやすい。
+      </div>
+    </div>
+
+    <!-- 前日米国市場 -->
+    <div class="card">
+      <h2>前日米国市場</h2>
+      <div class="us-market">
+        <div class="item">
+          <div class="sub">ナスダック</div>
+          <div class="big-number" style="font-size: 24px;">
+            <span class="pct-neg">-1.20%</span>
+          </div>
+        </div>
+        <div class="item">
+          <div class="sub">SOX指数</div>
+          <div class="big-number" style="font-size: 24px;">
+            <span class="pct-neg">-2.50%</span>
+          </div>
+        </div>
+      </div>
+      <div class="rationale" style="margin-top: 16px;">
+        米日連動/非連動の判断材料。米上げに対して先物が追随してないなら「米強日弱」警戒。
+      </div>
+    </div>
+
+    <!-- 1570 -->
+    <div class="card">
+      <h2>1570 日経レバETF</h2>
+      <table>
+        <tbody>
+          <tr>
+            <td>前日終値</td>
+            <td class="price">¥26,000</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="rationale" style="margin-top: 16px;">
+        ハイボラ時は1570が遅れて寄り付くことがあり、1570の寄り値が日経の天底を決めることも多い。
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <b>⚠️ ディスクレーマー</b>:
+    これは個人研究用のシグナルボードです。投資判断は自己責任で。
+    全てのシグナルは過去のアノマリーやサロン記事で言及された手法に基づく仮説であり、
+    統計的有意性は自分でバックテストして検証してください。
+  </div>
+</div>
+</body>
+</html>
