@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 
 from kiriban import build_daily_signal
+from market_direction import build_market_direction
 from sector_mapping import build_all_sector_signals, get_all_us_tickers
 from dashboard import render_dashboard
 
@@ -32,31 +33,36 @@ def main() -> int:
             "nikkei": {"prev_close": 38500.0, "change_pct": -0.5},
             "nikkei_futures": {"price": 37400.0},
             "etf_1570": {"prev_close": 26000.0},
-            "us_markets": {"nasdaq_change_pct": -1.2, "sox_change_pct": -2.5},
+            "us_markets": {
+                "nasdaq_change_pct": -1.2,
+                "dow_change_pct": -0.8,
+                "sox_change_pct": -2.5,
+            },
             "us_sector_changes": {
-                # 半導体: SOXに連動して下げ
                 "AMAT": -2.8, "LRCX": -3.1, "KLAC": -2.5, "AMD": -3.5, "NVDA": -2.9,
-                # ストレージ: 半導体と同じく下げ
                 "SNDK": -2.2, "WDC": -1.9, "STX": -1.5,
-                # 建機: 中立
                 "CAT": 0.3, "DE": -0.1,
-                # エネルギー: 原油上げ
                 "XOM": 1.8, "CVX": 1.6, "COP": 2.1,
-                # 軍需: 地政学リスクで上げ
                 "LMT": 2.3, "RTX": 1.9, "BA": 0.8, "HON": 0.4, "NOC": 1.7,
-                # 通信: やや上げ
                 "VZ": 0.7, "T": 0.5, "TMUS": 0.2,
-                # SaaS: 下げ主体
                 "CRM": -1.4, "MSFT": -0.8, "ORCL": -2.1, "ADBE": -1.6, "INTU": -1.2, "NOW": -1.8,
-                # 物流: 中立
                 "UPS": -0.2, "FDX": 0.1,
-                # 生活防衛
                 "KO": 0.3, "PG": 0.1, "CL": -0.1, "MCD": 0.4,
             },
         }
 
-    # キリバンシグナル
-    signal = build_daily_signal(
+    futures_diff = market["nikkei_futures"]["price"] - market["nikkei"]["prev_close"]
+
+    # 本日の日経デイトレ方針（トップシグナル）
+    direction_signal = build_market_direction(
+        nasdaq_change_pct=market["us_markets"]["nasdaq_change_pct"],
+        dow_change_pct=market["us_markets"]["dow_change_pct"],
+        sox_change_pct=market["us_markets"]["sox_change_pct"],
+        futures_diff=futures_diff,
+    )
+
+    # キリバン水準（参考指標）
+    kiriban_signal = build_daily_signal(
         nikkei_prev_close=market["nikkei"]["prev_close"],
         nikkei_futures=market["nikkei_futures"]["price"],
     )
@@ -69,7 +75,12 @@ def main() -> int:
     json_path = output_dir / "signal.json"
     with json_path.open("w", encoding="utf-8") as f:
         json.dump(
-            {"market": market, "signal": signal, "sectors": sector_signals_dict},
+            {
+                "market": market,
+                "direction": direction_signal.as_dict(),
+                "kiriban": kiriban_signal,
+                "sectors": sector_signals_dict,
+            },
             f,
             ensure_ascii=False,
             indent=2,
@@ -78,14 +89,22 @@ def main() -> int:
 
     # HTML出力
     html_path = output_dir / "index.html"
-    render_dashboard(signal, market, sector_signals_dict, html_path)
+    render_dashboard(
+        direction_signal=direction_signal.as_dict(),
+        kiriban_signal=kiriban_signal,
+        market=market,
+        sector_signals=sector_signals_dict,
+        output_path=html_path,
+    )
 
     # サマリ
-    sayatori = signal["sayatori_signal"]
     print("\n" + "=" * 60)
-    print(f"📊 朝一鞘取りシグナル: {sayatori['direction'].upper()}")
-    print(f"   現対: {sayatori['diff']:+,.0f}円")
-    print(f"   {sayatori['rationale']}")
+    print(f"📊 本日の日経デイトレ方針: {direction_signal.verdict_label}")
+    print(f"   確度: {direction_signal.confidence}")
+    for r in direction_signal.reasons:
+        print(f"   ・{r}")
+    print("=" * 60)
+    print(f"📐 現対: {futures_diff:+,.0f}円")
     print("=" * 60)
     print("🔁 セクター連動予測（強い順）:")
     for s in sector_signals_dict[:5]:
