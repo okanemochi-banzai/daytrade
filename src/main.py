@@ -1,19 +1,24 @@
 """
 Daytrade Signal Board - メインエントリポイント
-
-GitHub Actionsから呼ばれ、毎朝寄り前にシグナルを計算してHTMLダッシュボードを生成する。
 """
 
 from __future__ import annotations
 
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from kiriban import build_daily_signal
 from market_direction import build_market_direction
 from sector_mapping import build_all_sector_signals, get_all_us_tickers
+from warnings_module import get_all_warnings
+from market_context import build_market_context
 from dashboard import render_dashboard
+
+
+JST = ZoneInfo("Asia/Tokyo")
 
 
 def main() -> int:
@@ -29,14 +34,27 @@ def main() -> int:
         print(f"⚠️ Failed to fetch live data: {e}")
         print("Falling back to stub data for development.")
         market = {
-            "timestamp": "2026-04-23T08:40:00+09:00",
-            "nikkei": {"prev_close": 38500.0, "change_pct": -0.5},
+            "timestamp": "2026-04-24T08:40:00+09:00",  # 金曜にしてテスト
+            "nikkei": {
+                "prev_close": 38500.0,
+                "change_pct": -0.5,
+                "week_is_positive": True,
+                "month_is_positive": True,
+            },
             "nikkei_futures": {"price": 37400.0},
             "etf_1570": {"prev_close": 26000.0},
             "us_markets": {
                 "nasdaq_change_pct": -1.2,
                 "dow_change_pct": -0.8,
                 "sox_change_pct": -2.5,
+            },
+            "fx_commodities": {
+                "usdjpy_price": 150.2,
+                "usdjpy_change_pct": -0.8,
+                "gold_price": 2650.0,
+                "gold_change_pct": 1.2,
+                "oil_price": 72.5,
+                "oil_change_pct": -0.3,
             },
             "us_sector_changes": {
                 "AMAT": -2.8, "LRCX": -3.1, "KLAC": -2.5, "AMD": -3.5, "NVDA": -2.9,
@@ -51,9 +69,28 @@ def main() -> int:
             },
         }
 
-    futures_diff = market["nikkei_futures"]["price"] - market["nikkei"]["prev_close"]
+    today = datetime.fromisoformat(market["timestamp"]).date()
 
-    # 本日の日経デイトレ方針（トップシグナル）
+    # 警告バナー
+    warnings = get_all_warnings(
+        today=today,
+        nikkei_week_is_positive=market["nikkei"].get("week_is_positive"),
+        nikkei_month_is_positive=market["nikkei"].get("month_is_positive"),
+    )
+
+    # 為替・コモディティ情報
+    fx = market.get("fx_commodities", {})
+    market_ctx = build_market_context(
+        usdjpy_price=fx.get("usdjpy_price", 150.0),
+        usdjpy_change_pct=fx.get("usdjpy_change_pct", 0.0),
+        gold_price=fx.get("gold_price", 2600.0),
+        gold_change_pct=fx.get("gold_change_pct", 0.0),
+        oil_price=fx.get("oil_price", 70.0),
+        oil_change_pct=fx.get("oil_change_pct", 0.0),
+    )
+
+    # 日経デイトレ方針
+    futures_diff = market["nikkei_futures"]["price"] - market["nikkei"]["prev_close"]
     direction_signal = build_market_direction(
         nasdaq_change_pct=market["us_markets"]["nasdaq_change_pct"],
         dow_change_pct=market["us_markets"]["dow_change_pct"],
@@ -61,13 +98,13 @@ def main() -> int:
         futures_diff=futures_diff,
     )
 
-    # キリバン水準（参考指標）
+    # キリバン
     kiriban_signal = build_daily_signal(
         nikkei_prev_close=market["nikkei"]["prev_close"],
         nikkei_futures=market["nikkei_futures"]["price"],
     )
 
-    # セクター連動シグナル
+    # セクター
     sector_signals = build_all_sector_signals(market.get("us_sector_changes", {}))
     sector_signals_dict = [s.as_dict() for s in sector_signals]
 
@@ -77,6 +114,8 @@ def main() -> int:
         json.dump(
             {
                 "market": market,
+                "warnings": [w.as_dict() for w in warnings],
+                "market_context": market_ctx.as_dict(),
                 "direction": direction_signal.as_dict(),
                 "kiriban": kiriban_signal,
                 "sectors": sector_signals_dict,
@@ -84,12 +123,15 @@ def main() -> int:
             f,
             ensure_ascii=False,
             indent=2,
+            default=str,
         )
     print(f"✅ Signal JSON: {json_path}")
 
     # HTML出力
     html_path = output_dir / "index.html"
     render_dashboard(
+        warnings=[w.as_dict() for w in warnings],
+        market_context=market_ctx.as_dict(),
         direction_signal=direction_signal.as_dict(),
         kiriban_signal=kiriban_signal,
         market=market,
@@ -99,17 +141,14 @@ def main() -> int:
 
     # サマリ
     print("\n" + "=" * 60)
-    print(f"📊 本日の日経デイトレ方針: {direction_signal.verdict_label}")
-    print(f"   確度: {direction_signal.confidence}")
-    for r in direction_signal.reasons:
-        print(f"   ・{r}")
-    print("=" * 60)
+    if warnings:
+        print("⚠️  警告:")
+        for w in warnings:
+            print(f"   [{w.severity:>6}] {w.label}")
+    print(f"📊 本日の日経デイトレ方針: {direction_signal.verdict_label} (確度: {direction_signal.confidence})")
     print(f"📐 現対: {futures_diff:+,.0f}円")
-    print("=" * 60)
-    print("🔁 セクター連動予測（強い順）:")
-    for s in sector_signals_dict[:5]:
-        if s["signal_strength"] != "neutral":
-            print(f"   [{s['signal_strength']:>6}] {s['sector_name']:10s} {s['us_avg_change_pct']:+.2f}% → {s['direction']}")
+    if market_ctx.combined_note:
+        print(f"💱 マクロ警戒: {market_ctx.combined_note}")
     print("=" * 60)
 
     return 0
