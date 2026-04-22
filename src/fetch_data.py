@@ -16,6 +16,7 @@ TICKER_NIKKEI_SPOT = "^N225"
 TICKER_NIKKEI_FUT = "NKD=F"
 TICKER_NIKKEI_LEV_ETF = "1570.T"
 TICKER_NASDAQ = "^IXIC"
+TICKER_DOW = "^DJI"
 TICKER_SOX = "^SOX"
 TICKER_USDJPY = "JPY=X"
 
@@ -116,6 +117,7 @@ def fetch_all_market_data(us_sector_tickers: list[str] | None = None) -> dict:
     etf_1570_prev_close = fetch_prev_close(TICKER_NIKKEI_LEV_ETF)
 
     nasdaq_change = fetch_change_pct(TICKER_NASDAQ)
+    dow_change = fetch_change_pct(TICKER_DOW)
     sox_change = fetch_change_pct(TICKER_SOX)
     nikkei_change = fetch_change_pct(TICKER_NIKKEI_SPOT)
 
@@ -137,6 +139,7 @@ def fetch_all_market_data(us_sector_tickers: list[str] | None = None) -> dict:
         },
         "us_markets": {
             "nasdaq_change_pct": nasdaq_change,
+            "dow_change_pct": dow_change,
             "sox_change_pct": sox_change,
         },
         "us_sector_changes": us_sector_changes,
