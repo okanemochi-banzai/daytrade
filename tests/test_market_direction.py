@@ -1,0 +1,147 @@
+"""
+日経デイトレ方針判定のユニットテスト
+PDFに登場する典型パターンをテストケースとして採用。
+"""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+
+from market_direction import build_market_direction, classify_move
+
+
+def test_classify_move():
+    assert classify_move(1.5) == "bullish"
+    assert classify_move(-1.5) == "bearish"
+    assert classify_move(0.1) == "neutral"
+    assert classify_move(-0.1) == "neutral"
+    assert classify_move(0.3) == "bullish"
+    assert classify_move(-0.3) == "bearish"
+    print("✅ test_classify_move")
+
+
+def test_buy_bias_all_us_up_futures_aligned():
+    """米3指数全面上げ + 先物現対+300円 → 買いポジ主体"""
+    sig = build_market_direction(
+        nasdaq_change_pct=1.5,
+        dow_change_pct=0.8,
+        sox_change_pct=2.1,
+        futures_diff=300.0,
+    )
+    assert sig.verdict == "buy_bias"
+    assert sig.verdict_label == "買いポジ主体"
+    assert sig.confidence == "high"
+    assert sig.futures_aligned is True
+    print("✅ test_buy_bias_all_us_up_futures_aligned")
+
+
+def test_sell_bias_all_us_down_futures_aligned():
+    """米3指数全面下げ + 先物現対-500円 → 売りポジ主体"""
+    sig = build_market_direction(
+        nasdaq_change_pct=-2.0,
+        dow_change_pct=-1.2,
+        sox_change_pct=-3.5,
+        futures_diff=-500.0,
+    )
+    assert sig.verdict == "sell_bias"
+    assert sig.verdict_label == "売りポジ主体"
+    assert sig.confidence == "high"
+    assert sig.futures_aligned is True
+    print("✅ test_sell_bias_all_us_down_futures_aligned")
+
+
+def test_hands_off_us_strong_jp_weak():
+    """米強日弱: 米上げだが先物追随せず → 初心者手出し無用"""
+    # PDFの例: アメリカ株の下げに対し、日経先物は微上げ（逆パターン）
+    sig = build_market_direction(
+        nasdaq_change_pct=-1.5,
+        dow_change_pct=-0.8,
+        sox_change_pct=-2.0,
+        futures_diff=200.0,  # 米下げなのに先物上げ
+    )
+    assert sig.verdict == "hands_off"
+    assert sig.futures_aligned is False
+    print("✅ test_hands_off_us_strong_jp_weak")
+
+
+def test_hands_off_individual_diff():
+    """ダウ微上げ、SOX下げの個体差相場 → 初心者手出し無用"""
+    # PDFの典型例
+    sig = build_market_direction(
+        nasdaq_change_pct=0.2,
+        dow_change_pct=0.3,
+        sox_change_pct=-1.5,
+        futures_diff=-100.0,
+    )
+    assert sig.verdict == "hands_off"
+    assert sig.us_consensus_direction == "neutral"  # 米3指数がバラバラ
+    print("✅ test_hands_off_individual_diff")
+
+
+def test_buy_bias_medium_confidence():
+    """米上げは弱いが全部上げ + 先物追随 → 買いポジ主体、confidence=medium"""
+    sig = build_market_direction(
+        nasdaq_change_pct=0.4,
+        dow_change_pct=0.5,
+        sox_change_pct=0.6,
+        futures_diff=250.0,
+    )
+    assert sig.verdict == "buy_bias"
+    assert sig.confidence == "medium"
+    print("✅ test_buy_bias_medium_confidence")
+
+
+def test_two_of_three_bullish():
+    """3指数中2つが上げ、1つが弱い → 多数決で米上げ判定"""
+    sig = build_market_direction(
+        nasdaq_change_pct=1.5,
+        dow_change_pct=0.8,
+        sox_change_pct=-0.2,   # SOXはほぼフラット
+        futures_diff=300.0,
+    )
+    assert sig.us_consensus_direction == "bullish"
+    assert sig.verdict == "buy_bias"
+    print("✅ test_two_of_three_bullish")
+
+
+def test_hands_off_neutral_futures():
+    """米方向性あるが現対±200円未満 → 方向性不明確で様子見"""
+    sig = build_market_direction(
+        nasdaq_change_pct=1.2,
+        dow_change_pct=0.8,
+        sox_change_pct=1.5,
+        futures_diff=50.0,  # 現対フラット
+    )
+    assert sig.verdict == "hands_off"
+    assert sig.futures_aligned is False
+    print("✅ test_hands_off_neutral_futures")
+
+
+def test_reasons_contain_narrative():
+    """判定根拠が箇条書きで含まれる"""
+    sig = build_market_direction(
+        nasdaq_change_pct=1.5,
+        dow_change_pct=0.8,
+        sox_change_pct=2.1,
+        futures_diff=300.0,
+    )
+    assert len(sig.reasons) >= 2
+    assert any("米指数" in r for r in sig.reasons)
+    assert any("追随" in r or "連動" in r or "日弱" in r or "日強" in r for r in sig.reasons)
+    print("✅ test_reasons_contain_narrative")
+
+
+if __name__ == "__main__":
+    test_classify_move()
+    test_buy_bias_all_us_up_futures_aligned()
+    test_sell_bias_all_us_down_futures_aligned()
+    test_hands_off_us_strong_jp_weak()
+    test_hands_off_individual_diff()
+    test_buy_bias_medium_confidence()
+    test_two_of_three_bullish()
+    test_hands_off_neutral_futures()
+    test_reasons_contain_narrative()
+    print("\n🎉 All market direction tests passed!")
