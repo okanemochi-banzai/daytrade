@@ -1,10 +1,10 @@
 """
-日経・先物・1570・ナスダックのデータ取得モジュール
+日経・先物・1570・米セクター代表銘柄のデータ取得モジュール
 """
 
 from __future__ import annotations
 
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
 from zoneinfo import ZoneInfo
 
 import yfinance as yf
@@ -12,20 +12,15 @@ import yfinance as yf
 
 JST = ZoneInfo("Asia/Tokyo")
 
-# Yahoo Financeのティッカー
-TICKER_NIKKEI_SPOT = "^N225"       # 日経225現物
-TICKER_NIKKEI_FUT = "NKD=F"        # 日経225先物（CME, JPY建てではなくUSD建てなので注意）
-TICKER_NIKKEI_LEV_ETF = "1570.T"   # 日経レバレッジETF
-TICKER_NASDAQ = "^IXIC"            # ナスダック総合
-TICKER_SOX = "^SOX"                # 半導体指数
-
-# CMEの日経先物（NKD=F）はUSD建てなので、JPY建てに換算する必要がある。
-# 代替: 大証日経先物はyfinanceで取得困難。一旦 NKD=F を USD/JPY で換算して使う。
+TICKER_NIKKEI_SPOT = "^N225"
+TICKER_NIKKEI_FUT = "NKD=F"
+TICKER_NIKKEI_LEV_ETF = "1570.T"
+TICKER_NASDAQ = "^IXIC"
+TICKER_SOX = "^SOX"
 TICKER_USDJPY = "JPY=X"
 
 
 def fetch_prev_close(ticker: str) -> float:
-    """指定ティッカーの直近終値を取得する。"""
     data = yf.Ticker(ticker).history(period="5d", interval="1d")
     if data.empty:
         raise RuntimeError(f"No data for {ticker}")
@@ -33,12 +28,7 @@ def fetch_prev_close(ticker: str) -> float:
 
 
 def fetch_current_price(ticker: str) -> float:
-    """指定ティッカーの現在価格（直近1分足）を取得する。
-
-    寄り前はfast_infoのregularMarketPriceではなく直近セッション終値が返る点に注意。
-    """
     tkr = yf.Ticker(ticker)
-    # fast_info は ライトウェイトだが寄り前は前日データが返ることに注意
     try:
         info = tkr.fast_info
         price = info.get("lastPrice") or info.get("last_price")
@@ -47,7 +37,6 @@ def fetch_current_price(ticker: str) -> float:
     except Exception:
         pass
 
-    # フォールバック: 1分足の直近
     data = tkr.history(period="1d", interval="1m")
     if data.empty:
         data = tkr.history(period="5d", interval="1d")
@@ -57,28 +46,69 @@ def fetch_current_price(ticker: str) -> float:
 
 
 def fetch_nikkei_futures_jpy() -> float:
-    """日経225先物をJPY建てで取得する。
-
-    NKD=F はUSD建てなので USD/JPY で換算する。
-    """
-    nkd_usd = fetch_current_price(TICKER_NIKKEI_FUT)
-    usdjpy = fetch_current_price(TICKER_USDJPY)
-    # NKD=F の価格は既に日経インデックス値（USDではなくポイント扱い）で提供されることが多いが、
-    # 実際には契約乗数がUSDベース。一旦そのまま使い、運用しながら補正する。
-    # TODO: 大証先物のAPIに切り替える（yfinance外）
-    return nkd_usd
+    """日経225先物をJPY建てで取得する（NKD=FはCME日経先物、ポイント表示）。"""
+    return fetch_current_price(TICKER_NIKKEI_FUT)
 
 
 def fetch_change_pct(ticker: str, days: int = 1) -> float:
-    """直近N日間の騰落率（%）を返す。"""
     data = yf.Ticker(ticker).history(period=f"{days + 3}d", interval="1d")
     if len(data) < 2:
         return 0.0
     return float((data["Close"].iloc[-1] / data["Close"].iloc[-2] - 1) * 100)
 
 
-def fetch_all_market_data() -> dict:
-    """ダッシュボード用の全マーケットデータを一括取得する。"""
+def fetch_multi_change_pct(tickers: list[str]) -> dict[str, float]:
+    """複数ティッカーの騰落率を一括取得する。
+
+    yf.download で一括取得すると効率的だが、多数ティッカーではAPI制限にかかるため
+    個別取得にフォールバックできるよう設計。
+    """
+    if not tickers:
+        return {}
+
+    try:
+        data = yf.download(
+            tickers=" ".join(tickers),
+            period="5d",
+            interval="1d",
+            progress=False,
+            group_by="ticker",
+            auto_adjust=True,
+        )
+    except Exception as e:
+        print(f"⚠️ Bulk download failed: {e}. Falling back to individual fetches.")
+        return {t: _safe_change_pct(t) for t in tickers}
+
+    result: dict[str, float] = {}
+    for t in tickers:
+        try:
+            if len(tickers) == 1:
+                closes = data["Close"]
+            else:
+                closes = data[t]["Close"]
+            closes = closes.dropna()
+            if len(closes) < 2:
+                continue
+            pct = float((closes.iloc[-1] / closes.iloc[-2] - 1) * 100)
+            result[t] = pct
+        except (KeyError, IndexError):
+            continue
+    return result
+
+
+def _safe_change_pct(ticker: str) -> float:
+    try:
+        return fetch_change_pct(ticker)
+    except Exception:
+        return 0.0
+
+
+def fetch_all_market_data(us_sector_tickers: list[str] | None = None) -> dict:
+    """ダッシュボード用の全マーケットデータを一括取得する。
+
+    Args:
+        us_sector_tickers: 米セクター代表銘柄のティッカーリスト（任意）
+    """
     now = datetime.now(JST)
 
     nikkei_prev_close = fetch_prev_close(TICKER_NIKKEI_SPOT)
@@ -88,6 +118,10 @@ def fetch_all_market_data() -> dict:
     nasdaq_change = fetch_change_pct(TICKER_NASDAQ)
     sox_change = fetch_change_pct(TICKER_SOX)
     nikkei_change = fetch_change_pct(TICKER_NIKKEI_SPOT)
+
+    us_sector_changes: dict[str, float] = {}
+    if us_sector_tickers:
+        us_sector_changes = fetch_multi_change_pct(us_sector_tickers)
 
     return {
         "timestamp": now.isoformat(),
@@ -105,4 +139,5 @@ def fetch_all_market_data() -> dict:
             "nasdaq_change_pct": nasdaq_change,
             "sox_change_pct": sox_change,
         },
+        "us_sector_changes": us_sector_changes,
     }
