@@ -1,49 +1,49 @@
 {
   "market": {
-    "timestamp": "2026-04-23T08:40:00+09:00",
+    "timestamp": "2026-04-23T01:05:55.501732+09:00",
     "nikkei": {
-      "prev_close": 38500.0,
-      "change_pct": -0.5
+      "prev_close": 59349.171875,
+      "change_pct": 0.8912575007443913
     },
     "nikkei_futures": {
-      "price": 37400.0
+      "price": 59605.0
     },
     "etf_1570": {
-      "prev_close": 26000.0
+      "prev_close": 58850.0
     },
     "us_markets": {
-      "nasdaq_change_pct": -1.2,
-      "sox_change_pct": -2.5
+      "nasdaq_change_pct": 1.3137564305898852,
+      "sox_change_pct": 1.837389635503217
     }
   },
   "signal": {
     "kiriban_bands": {
-      "prev_close": 38500.0,
+      "prev_close": 59349.171875,
       "bands": {
-        "-1500": 37000.0,
-        "-1000": 37500.0,
-        "-500": 38000.0,
-        "+500": 39000.0,
-        "+1000": 39500.0,
-        "+1500": 40000.0
+        "-1500": 57849.171875,
+        "-1000": 58349.171875,
+        "-500": 58849.171875,
+        "+500": 59849.171875,
+        "+1000": 60349.171875,
+        "+1500": 60849.171875
       }
     },
     "sayatori_signal": {
-      "futures_price": 37400.0,
-      "spot_price": 38500.0,
-      "diff": -1100.0,
-      "abs_diff": 1100.0,
-      "direction": "long",
+      "futures_price": 59605.0,
+      "spot_price": 59349.171875,
+      "diff": 255.828125,
+      "abs_diff": 255.828125,
+      "direction": "neutral",
       "threshold": 1000,
-      "rationale": "現対-1,100円。先物が現物より1,100円安い。鞘が閉じる方向（先物買い）を朝一で狙う。"
+      "rationale": "現対+256円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
     },
     "round_number_levels": {
-      "current_price": 38500.0,
-      "resistance": 39000.0,
-      "support": 38000.0,
+      "current_price": 59349.171875,
+      "resistance": 60000.0,
+      "support": 59000.0,
       "step": 1000
     },
-    "high_volatility": true,
-    "kiriban_effective": true
+    "high_volatility": false,
+    "kiriban_effective": false
   }
 }
