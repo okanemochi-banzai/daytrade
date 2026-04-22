@@ -1,0 +1,49 @@
+name: Weekly Backtest
+
+on:
+  schedule:
+    # 毎週日曜日 10:00 JST (= 01:00 UTC 日曜)
+    - cron: "0 1 * * 0"
+  workflow_dispatch:
+    inputs:
+      period:
+        description: "Backtest period (e.g. 3mo, 6mo, 1y, 2y)"
+        required: false
+        default: "6mo"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  run-backtest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run backtest tests
+        run: |
+          python tests/test_backtest.py
+          python tests/test_direction_backtest.py
+
+      - name: Run backtest and generate report
+        run: |
+          cd src
+          python backtest_report.py ${{ github.event.inputs.period || '6mo' }}
+
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/backtest_report.html docs/backtest_report.json
+          git diff --quiet --cached || git commit -m "chore: update backtest report"
+          git push
