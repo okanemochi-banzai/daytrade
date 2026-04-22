@@ -1,5 +1,9 @@
 """
 バックテスト結果のHTML/JSONレポート生成
+
+2種類の検証結果をまとめて1つのレポートに出力:
+  1. 米→日セクター連動マッピングの検証（相関・p値・ヒット率）
+  2. 日経デイトレ方針判定ロジックの検証（判定別の勝率・騰落率）
 """
 
 from __future__ import annotations
@@ -10,10 +14,13 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from backtest import PairValidationResult
+from direction_backtest import DirectionBacktestResult
 
 
 JST = ZoneInfo("Asia/Tokyo")
 
+
+# ----- セクター検証セクション用ヘルパー -----
 
 def _verdict_class(verdict: str) -> str:
     return {
@@ -54,8 +61,33 @@ def _format_p(p: float) -> str:
     return f'<span class="muted">{p:.3f}</span>'
 
 
+# ----- 日経方針検証セクション用ヘルパー -----
+
+def _format_pct(pct: float) -> str:
+    if pct > 0:
+        return f'<span style="color: var(--long);">+{pct:.2f}%</span>'
+    if pct < 0:
+        return f'<span style="color: var(--short);">{pct:.2f}%</span>'
+    return f'<span class="muted">{pct:.2f}%</span>'
+
+
+def _format_win_rate(rate: float, n: int) -> str:
+    pct = rate * 100
+    color = "var(--long)" if pct >= 55 else ("var(--short)" if pct < 45 else "var(--text)")
+    return f'<span style="color: {color};">{pct:.1f}%</span> <span class="muted">({n}日)</span>'
+
+
+def _verdict_badge(verdict: str, label: str) -> str:
+    if verdict == "buy_bias":
+        return f'<span class="dir-badge dir-buy">📈 {label}</span>'
+    if verdict == "sell_bias":
+        return f'<span class="dir-badge dir-sell">📉 {label}</span>'
+    return f'<span class="dir-badge dir-hands-off">⏸️ {label}</span>'
+
+
 def render_report(
-    results: list[PairValidationResult],
+    sector_results: list[PairValidationResult],
+    direction_result: DirectionBacktestResult | None,
     period: str,
     output_html: Path,
     output_json: Path,
@@ -63,20 +95,18 @@ def render_report(
     """結果をHTMLとJSONで出力"""
     now = datetime.now(JST).strftime("%Y-%m-%d %H:%M JST")
 
-    # 統計サマリ
-    n_total = len(results)
-    n_confirmed = sum(1 for r in results if r.verdict == "confirmed")
-    n_weak = sum(1 for r in results if r.verdict == "weak")
-    n_contradicted = sum(1 for r in results if r.verdict == "contradicted")
-    n_insufficient = sum(1 for r in results if r.verdict == "insufficient_data")
+    # ===== セクター検証セクション =====
+    n_total = len(sector_results)
+    n_confirmed = sum(1 for r in sector_results if r.verdict == "confirmed")
+    n_weak = sum(1 for r in sector_results if r.verdict == "weak")
+    n_contradicted = sum(1 for r in sector_results if r.verdict == "contradicted")
+    n_insufficient = sum(1 for r in sector_results if r.verdict == "insufficient_data")
 
-    # テーブル行
-    rows_html = ""
-    for r in results:
+    sector_rows = ""
+    for r in sector_results:
         tickers_us = ", ".join(r.us_tickers_used) if r.us_tickers_used else "—"
         tickers_jp = ", ".join(r.jp_tickers_used) if r.jp_tickers_used else "—"
-
-        rows_html += f"""
+        sector_rows += f"""
           <tr>
             <td>
               <div class="sector-name"><b>{r.sector_name}</b></div>
@@ -95,6 +125,83 @@ def render_report(
           </tr>
         """
 
+    # ===== 日経方針検証セクション =====
+    if direction_result and direction_result.total_days > 0:
+        dir_rows = ""
+        for s in direction_result.stats_by_verdict:
+            if s.n == 0:
+                continue
+            dir_rows += f"""
+              <tr>
+                <td>{_verdict_badge(s.verdict, s.verdict_label)}</td>
+                <td class="num">{s.n}</td>
+                <td class="num">{_format_pct(s.mean_intraday_pct)}</td>
+                <td class="num">{_format_pct(s.median_intraday_pct)}</td>
+                <td class="num"><span class="muted">±{s.std_intraday_pct:.2f}%</span></td>
+                <td class="num">{_format_win_rate(s.directional_win_rate, s.n_aligned)}</td>
+                <td class="num">{_format_pct(s.avg_when_aligned)}</td>
+                <td class="num">{_format_pct(s.mean_daily_pct)}</td>
+              </tr>
+            """
+        direction_section = f"""
+  <section class="section-box">
+    <h2 class="section-title">📈 日経デイトレ方針判定の検証</h2>
+    <div class="period-note">
+      検証期間: {direction_result.start_date} ～ {direction_result.end_date}
+      ({direction_result.total_days}営業日)
+    </div>
+
+    <table class="results">
+      <thead>
+        <tr>
+          <th>判定</th>
+          <th class="num">該当日数</th>
+          <th class="num">日中<br>平均</th>
+          <th class="num">日中<br>中央値</th>
+          <th class="num">日中<br>標準偏差</th>
+          <th class="num">方向一致率</th>
+          <th class="num">一致日平均</th>
+          <th class="num">日次<br>平均</th>
+        </tr>
+      </thead>
+      <tbody>
+        {dir_rows}
+      </tbody>
+    </table>
+
+    <div class="explainer">
+      <h3>📖 指標の読み方</h3>
+      <ul>
+        <li><b>日中平均</b>: その判定が出た日の日経の寄り付き→引け の平均騰落率。
+          買いポジ主体でプラス、売りポジ主体でマイナスになっていれば判定は機能している。</li>
+        <li><b>日中中央値</b>: 外れ値に影響されないロバストな中心傾向。平均と乖離があれば外れ値の影響が大きい。</li>
+        <li><b>日中標準偏差</b>: ボラティリティ。大きいほどその日の値幅ブレが大きい。</li>
+        <li><b>方向一致率</b>: 判定方向に日中が動いた日の割合。50%は偶然レベル、55%超で有意、60%超で信頼性高い。
+          「初心者手出し無用」では「±0.3%以内のレンジ」を一致と定義。</li>
+        <li><b>一致日平均</b>: 方向一致した日だけの平均騰落率。大きいほど「当たった時の収益」が大きい。</li>
+        <li><b>日次平均</b>: 前日終値→当日終値の平均（スイング視点）。日中より大きくなる傾向あり。</li>
+      </ul>
+    </div>
+
+    <div class="explainer">
+      <h3>🎯 判定の使い方</h3>
+      <ul>
+        <li><b>方向一致率 ≥ 60%</b>: シグナルを信頼して OCO不成デイトレで使える水準。</li>
+        <li><b>方向一致率 50-60%</b>: 参考程度。他の指標（キリバン、セクター）と組み合わせて判断。</li>
+        <li><b>方向一致率 < 50%</b>: シグナルが実相場で機能していない。しきい値や条件を見直す候補。</li>
+      </ul>
+    </div>
+  </section>
+"""
+    else:
+        direction_section = """
+  <section class="section-box">
+    <h2 class="section-title">📈 日経デイトレ方針判定の検証</h2>
+    <div class="muted" style="padding: 16px;">データ取得に失敗しました。</div>
+  </section>
+"""
+
+    # ===== HTML全体 =====
     html = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -129,12 +236,23 @@ def render_report(
   .back-link:hover {{ text-decoration: underline; }}
   .timestamp {{ color: var(--muted); font-size: 13px; }}
   .period {{ color: var(--accent); font-size: 13px; font-weight: 600; }}
+  .period-note {{ color: var(--muted); font-size: 13px; margin-bottom: 12px; }}
+
+  section.section-box {{ margin-bottom: 40px; }}
+  h2.section-title {{
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 14px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }}
 
   .summary {{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }}
   .summary-card {{
     background: var(--panel);
@@ -194,13 +312,25 @@ def render_report(
   .verdict-contradicted {{ background: rgba(239, 68, 68, 0.15); color: var(--short); }}
   .verdict-neutral {{ background: rgba(107, 114, 128, 0.15); color: var(--neutral); }}
 
+  .dir-badge {{
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+  }}
+  .dir-buy {{ background: rgba(16, 185, 129, 0.15); color: var(--long); }}
+  .dir-sell {{ background: rgba(239, 68, 68, 0.15); color: var(--short); }}
+  .dir-hands-off {{ background: rgba(107, 114, 128, 0.15); color: var(--neutral); }}
+
   .explainer {{
     background: var(--panel);
     border: 1px solid var(--border);
     border-left: 3px solid var(--accent);
     border-radius: 0 8px 8px 0;
     padding: 14px 18px;
-    margin: 24px 0;
+    margin: 16px 0;
     font-size: 13px;
   }}
   .explainer h3 {{ margin: 0 0 8px 0; font-size: 14px; color: var(--accent); }}
@@ -232,80 +362,71 @@ def render_report(
     </div>
   </header>
 
-  <!-- サマリ -->
-  <div class="summary">
-    <div class="summary-card summary-confirmed">
-      <div class="num">{n_confirmed}</div>
-      <div class="label">✅ 連動確認</div>
-    </div>
-    <div class="summary-card summary-weak">
-      <div class="num">{n_weak}</div>
-      <div class="label">△ 弱連動</div>
-    </div>
-    <div class="summary-card summary-contradicted">
-      <div class="num">{n_contradicted}</div>
-      <div class="label">✗ 連動せず</div>
-    </div>
-    <div class="summary-card summary-insufficient">
-      <div class="num">{n_insufficient}</div>
-      <div class="label">— データ不足</div>
-    </div>
-    <div class="summary-card">
-      <div class="num">{n_total}</div>
-      <div class="label">合計セクター</div>
-    </div>
-  </div>
+  {direction_section}
 
-  <!-- 結果テーブル -->
-  <table class="results">
-    <thead>
-      <tr>
-        <th>セクター</th>
-        <th class="num">相関 r</th>
-        <th class="num">p値</th>
-        <th class="num">n</th>
-        <th class="num">米↑→日↑</th>
-        <th class="num">米↓→日↓</th>
-        <th>判定</th>
-        <th>使用銘柄</th>
-      </tr>
-    </thead>
-    <tbody>
-      {rows_html}
-    </tbody>
-  </table>
+  <section class="section-box">
+    <h2 class="section-title">🔁 米→日セクター連動マッピングの検証</h2>
 
-  <!-- 読み方 -->
-  <div class="explainer">
-    <h3>📖 指標の読み方</h3>
-    <ul>
-      <li><b>相関 r</b>: 米セクター平均騰落率(T日) と 日本セクター平均騰落率(T+1日) のピアソン相関係数。
-        <code>r ≥ 0.4</code> で強い連動、<code>0.2 ≤ r &lt; 0.4</code> で中程度、それ未満は弱い。</li>
-      <li><b>p値</b>: 「本当は無相関なのに偶然この相関係数が出た確率」。<code>&lt; 0.05</code> で統計的に有意。</li>
-      <li><b>n</b>: 有効サンプル数（日数）。<code>n &lt; 20</code> だと判定不能。</li>
-      <li><b>米↑→日↑ ヒット率</b>: 米セクターが<b>+1%以上上げた日</b>、翌日の日本セクターが<b>+0%以上</b>だった確率。</li>
-      <li><b>米↓→日↓ ヒット率</b>: 米セクターが<b>-1%以上下げた日</b>、翌日の日本セクターが<b>-0%以下</b>だった確率。</li>
-      <li><b>判定</b>: PDFの経験則（期待連動強度: high/medium/low）と実測の整合性。</li>
-    </ul>
-  </div>
+    <div class="summary">
+      <div class="summary-card summary-confirmed">
+        <div class="num">{n_confirmed}</div>
+        <div class="label">✅ 連動確認</div>
+      </div>
+      <div class="summary-card summary-weak">
+        <div class="num">{n_weak}</div>
+        <div class="label">△ 弱連動</div>
+      </div>
+      <div class="summary-card summary-contradicted">
+        <div class="num">{n_contradicted}</div>
+        <div class="label">✗ 連動せず</div>
+      </div>
+      <div class="summary-card summary-insufficient">
+        <div class="num">{n_insufficient}</div>
+        <div class="label">— データ不足</div>
+      </div>
+      <div class="summary-card">
+        <div class="num">{n_total}</div>
+        <div class="label">合計セクター</div>
+      </div>
+    </div>
 
-  <!-- 使い方 -->
-  <div class="explainer">
-    <h3>🎯 このレポートの使い方</h3>
-    <ul>
-      <li><b>confirmed</b> のセクター → メインダッシュボードのシグナルを信頼度高く使える。</li>
-      <li><b>weak</b> のセクター → 参考程度に。他の根拠と組み合わせて判断。</li>
-      <li><b>contradicted</b> のセクター → シグナルを疑う、もしくはマッピングから外す候補。</li>
-      <li><b>insufficient_data</b> → サンプル不足、バックテスト期間を伸ばすか、銘柄構成を見直す。</li>
-    </ul>
-  </div>
+    <table class="results">
+      <thead>
+        <tr>
+          <th>セクター</th>
+          <th class="num">相関 r</th>
+          <th class="num">p値</th>
+          <th class="num">n</th>
+          <th class="num">米↑→日↑</th>
+          <th class="num">米↓→日↓</th>
+          <th>判定</th>
+          <th>使用銘柄</th>
+        </tr>
+      </thead>
+      <tbody>
+        {sector_rows}
+      </tbody>
+    </table>
+
+    <div class="explainer">
+      <h3>📖 指標の読み方</h3>
+      <ul>
+        <li><b>相関 r</b>: 米セクター平均騰落率(T日) と 日本セクター平均騰落率(T+1日) のピアソン相関係数。
+          <code>r ≥ 0.4</code> で強い連動、<code>0.2 ≤ r &lt; 0.4</code> で中程度、それ未満は弱い。</li>
+        <li><b>p値</b>: 「本当は無相関なのに偶然この相関係数が出た確率」。<code>&lt; 0.05</code> で統計的に有意。</li>
+        <li><b>n</b>: 有効サンプル数（日数）。<code>n &lt; 20</code> だと判定不能。</li>
+        <li><b>米↑→日↑ ヒット率</b>: 米セクターが<b>+1%以上上げた日</b>、翌日の日本セクターが<b>+0%以上</b>だった確率。</li>
+        <li><b>米↓→日↓ ヒット率</b>: 米セクターが<b>-1%以上下げた日</b>、翌日の日本セクターが<b>-0%以下</b>だった確率。</li>
+      </ul>
+    </div>
+  </section>
 
   <div class="footer-note">
     <b>⚠️ 注意点</b><br>
     ・バックテスト期間は市場環境に大きく依存します（下げ相場・上げ相場で相関が変わる）。定期的に再検証してください。<br>
     ・相関が高くても、将来も同じとは限りません。特に個別銘柄材料（決算、不正、M&A）発生時は連動が崩れます。<br>
     ・サンプル数が少ないセクターでは、たまたま高い相関が出ていることがあります。p値も必ず確認してください。<br>
-    ・ヒット率は「方向一致率」を見るもので、実際のトレード収益性とは別物です。
+    ・方向一致率は「方向が合った率」であり、実際のトレード収益性とは別物です（スリッページ・取引コスト未考慮）。
   </div>
 </div>
 </body>
@@ -318,14 +439,17 @@ def render_report(
     json_data = {
         "generated_at": now,
         "period": period,
-        "summary": {
-            "total": n_total,
-            "confirmed": n_confirmed,
-            "weak": n_weak,
-            "contradicted": n_contradicted,
-            "insufficient_data": n_insufficient,
+        "sector_validation": {
+            "summary": {
+                "total": n_total,
+                "confirmed": n_confirmed,
+                "weak": n_weak,
+                "contradicted": n_contradicted,
+                "insufficient_data": n_insufficient,
+            },
+            "results": [r.as_dict() for r in sector_results],
         },
-        "results": [r.as_dict() for r in results],
+        "direction_validation": direction_result.as_dict() if direction_result else None,
     }
     output_json.write_text(
         json.dumps(json_data, ensure_ascii=False, indent=2),
@@ -336,20 +460,35 @@ def render_report(
     print(f"📊 JSON report: {output_json}")
 
 
-def run_backtest_and_report(period: str = "6mo") -> None:
-    """バックテストを実行してレポートを出力するエントリポイント"""
+def run_backtest_and_report(period: str = "6mo", direction_period: str = "1y") -> None:
+    """バックテストを実行してレポートを出力するエントリポイント
+
+    Args:
+        period: セクター検証の期間
+        direction_period: 日経方針検証の期間（より長めがおすすめ）
+    """
     from backtest import validate_all_sectors
+    from direction_backtest import validate_direction_logic
 
     output_dir = Path(__file__).resolve().parent.parent / "docs"
     output_dir.mkdir(exist_ok=True)
 
-    print(f"🔍 Running backtest for period: {period}")
-    results = validate_all_sectors(period=period)
+    print(f"🔍 Running sector validation for period: {period}")
+    sector_results = validate_all_sectors(period=period)
+
+    print()
+    print(f"🔍 Running direction logic validation for period: {direction_period}")
+    direction_result = None
+    try:
+        direction_result = validate_direction_logic(period=direction_period)
+    except Exception as e:
+        print(f"⚠️ Direction validation failed: {e}")
 
     print()
     render_report(
-        results=results,
-        period=period,
+        sector_results=sector_results,
+        direction_result=direction_result,
+        period=f"{period} (セクター) / {direction_period} (日経方針)",
         output_html=output_dir / "backtest_report.html",
         output_json=output_dir / "backtest_report.json",
     )
@@ -359,4 +498,5 @@ if __name__ == "__main__":
     import sys
 
     period = sys.argv[1] if len(sys.argv) > 1 else "6mo"
-    run_backtest_and_report(period=period)
+    direction_period = sys.argv[2] if len(sys.argv) > 2 else "1y"
+    run_backtest_and_report(period=period, direction_period=direction_period)
