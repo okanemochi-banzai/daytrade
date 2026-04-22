@@ -1,5 +1,5 @@
 """
-キリバンシグナル + 米→日セクター連動 HTMLダッシュボード生成
+本日の日経方針 + セクター連動予測 + キリバン水準 のHTMLダッシュボード生成
 """
 
 from __future__ import annotations
@@ -12,21 +12,66 @@ def format_jpy(n: float) -> str:
     return f"¥{n:,.0f}"
 
 
-def render_sayatori_badge(direction: str) -> str:
-    if direction == "long":
-        return '<span class="badge badge-long">鞘取りロング</span>'
-    if direction == "short":
-        return '<span class="badge badge-short">鞘取りショート</span>'
-    return '<span class="badge badge-neutral">様子見</span>'
+# ----- 日経方針カード -----
 
+def render_direction_verdict(direction_signal: dict) -> str:
+    verdict = direction_signal["verdict"]
+    label = direction_signal["verdict_label"]
+    confidence = direction_signal["confidence"]
+
+    if verdict == "buy_bias":
+        bg = "rgba(16, 185, 129, 0.15)"
+        color = "var(--long)"
+        icon = "📈"
+    elif verdict == "sell_bias":
+        bg = "rgba(239, 68, 68, 0.15)"
+        color = "var(--short)"
+        icon = "📉"
+    else:
+        bg = "rgba(107, 114, 128, 0.15)"
+        color = "var(--neutral)"
+        icon = "⏸️"
+
+    conf_text = {"high": "確度:高", "medium": "確度:中", "low": "確度:低"}.get(confidence, "")
+
+    return f"""
+    <div style="background: {bg}; color: {color}; padding: 16px 20px; border-radius: 12px; display: inline-flex; align-items: center; gap: 12px;">
+      <div style="font-size: 32px;">{icon}</div>
+      <div>
+        <div style="font-size: 24px; font-weight: 700;">{label}</div>
+        <div style="font-size: 12px; opacity: 0.8; margin-top: 2px;">{conf_text}</div>
+      </div>
+    </div>
+    """
+
+
+def render_us_indices_row(indices: list[dict]) -> str:
+    """米3指数の横並び表示"""
+    items = ""
+    for idx in indices:
+        pct = idx["change_pct"]
+        if idx["direction"] == "bullish":
+            color = "var(--long)"
+        elif idx["direction"] == "bearish":
+            color = "var(--short)"
+        else:
+            color = "var(--muted)"
+        items += f"""
+        <div class="us-idx-item">
+          <div class="us-idx-name">{idx['name']}</div>
+          <div class="us-idx-pct" style="color: {color};">{pct:+.2f}%</div>
+        </div>
+        """
+    return items
+
+
+# ----- セクターカード -----
 
 def render_sector_card(sig: dict) -> str:
-    """1セクターぶんのカードをHTMLで返す"""
     direction = sig["direction"]
     strength = sig["signal_strength"]
     avg = sig["us_avg_change_pct"]
 
-    # 色分け
     if direction == "bullish":
         bar_class = "bar-bullish"
         dir_class = "dir-bullish"
@@ -43,17 +88,14 @@ def render_sector_card(sig: dict) -> str:
         dir_text = "様子見"
         arrow = "━"
 
-    # 連動強度のマーク
     corr_badges = {
-        "high": '<span class="corr corr-high" title="PDFで繰り返し言及される強い連動">🔗🔗🔗</span>',
-        "medium": '<span class="corr corr-med" title="条件次第で連動">🔗🔗</span>',
-        "low": '<span class="corr corr-low" title="連動は弱め">🔗</span>',
+        "high": '<span class="corr" title="強連動">🔗🔗🔗</span>',
+        "medium": '<span class="corr" title="中連動">🔗🔗</span>',
+        "low": '<span class="corr" title="弱連動">🔗</span>',
     }
     corr_badge = corr_badges.get(sig["correlation_strength"], "")
 
-    # バーの幅（±3%を100%として）
     bar_width = min(abs(avg) / 3.0 * 100, 100)
-    # バーの方向オフセット
     bar_offset = 50 if direction == "bullish" else (50 - bar_width if direction == "bearish" else 50)
     bar_display_width = bar_width if direction != "neutral" else 0
 
@@ -83,12 +125,17 @@ def render_sector_card(sig: dict) -> str:
     """
 
 
-def render_dashboard(signal: dict, market: dict, sector_signals: list[dict], output_path: Path) -> None:
+def render_dashboard(
+    direction_signal: dict,
+    kiriban_signal: dict,
+    market: dict,
+    sector_signals: list[dict],
+    output_path: Path,
+) -> None:
     """HTMLダッシュボードを生成してファイルに書き出す。"""
-    kiriban = signal["kiriban_bands"]
-    sayatori = signal["sayatori_signal"]
-    round_levels = signal["round_number_levels"]
-    hivol = signal["high_volatility"]
+    kiriban = kiriban_signal["kiriban_bands"]
+    round_levels = kiriban_signal["round_number_levels"]
+    hivol = kiriban_signal["high_volatility"]
 
     band_rows = ""
     for key in ["+1500", "+1000", "+500", "-500", "-1000", "-1500"]:
@@ -100,15 +147,17 @@ def render_dashboard(signal: dict, market: dict, sector_signals: list[dict], out
           <td class="price">{format_jpy(price)}</td>
         </tr>"""
 
-    sayatori_badge = render_sayatori_badge(sayatori["direction"])
-    hivol_label = "🔥 ハイボラ" if hivol else "😴 通常ボラ"
-    hivol_color = "#ef4444" if hivol else "#6b7280"
-
-    us_nasdaq = market["us_markets"]["nasdaq_change_pct"]
-    us_sox = market["us_markets"]["sox_change_pct"]
-
-    # セクターカード一覧
     sector_cards_html = "".join(render_sector_card(s) for s in sector_signals)
+
+    direction_verdict_html = render_direction_verdict(direction_signal)
+    us_indices_html = render_us_indices_row(direction_signal["us_indices"])
+    reasons_html = "".join(f"<li>{r}</li>" for r in direction_signal["reasons"])
+
+    futures_diff = direction_signal["futures_diff"]
+    futures_diff_color = (
+        "var(--long)" if futures_diff >= 200
+        else ("var(--short)" if futures_diff <= -200 else "var(--muted)")
+    )
 
     html = f"""<!DOCTYPE html>
 <html lang="ja">
@@ -138,9 +187,13 @@ def render_dashboard(signal: dict, market: dict, sector_signals: list[dict], out
     line-height: 1.6;
   }}
   .container {{ max-width: 1280px; margin: 0 auto; padding: 24px; }}
-  header {{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }}
+  header {{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; flex-wrap: wrap; gap: 8px; }}
   h1 {{ margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.02em; }}
+  .header-right {{ text-align: right; }}
   .timestamp {{ color: var(--muted); font-size: 13px; }}
+  .report-link {{ color: var(--accent); text-decoration: none; font-size: 13px; }}
+  .report-link:hover {{ text-decoration: underline; }}
+
   section {{ margin-bottom: 28px; }}
   section > h2.section-title {{
     font-size: 16px;
@@ -160,15 +213,68 @@ def render_dashboard(signal: dict, market: dict, sector_signals: list[dict], out
     padding: 20px;
   }}
   .card h2 {{ margin: 0 0 12px 0; font-size: 14px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }}
-  .big-number {{ font-size: 32px; font-weight: 700; margin: 8px 0; font-variant-numeric: tabular-nums; }}
   .sub {{ color: var(--muted); font-size: 14px; }}
-  .badge {{ display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }}
-  .badge-long {{ background: rgba(16, 185, 129, 0.15); color: var(--long); }}
-  .badge-short {{ background: rgba(239, 68, 68, 0.15); color: var(--short); }}
-  .badge-neutral {{ background: rgba(107, 114, 128, 0.15); color: var(--neutral); }}
+
+  /* 日経方針カード */
+  .direction-card {{
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }}
+  .direction-meta {{
+    margin-top: 16px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }}
+  .direction-meta-item {{
+    flex: 1;
+    min-width: 200px;
+  }}
+  .direction-meta-label {{
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }}
+  .us-indices {{
+    display: flex;
+    gap: 16px;
+    margin-top: 6px;
+  }}
+  .us-idx-item {{
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    background: var(--panel-2);
+    border-radius: 6px;
+  }}
+  .us-idx-name {{ font-size: 11px; color: var(--muted); }}
+  .us-idx-pct {{ font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }}
+  .futures-value {{
+    font-size: 22px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    margin-top: 6px;
+  }}
+  .reasons-list {{
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: var(--panel-2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+  }}
+  .reasons-list ul {{
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13px;
+  }}
+  .reasons-list li {{ margin: 4px 0; }}
+
+  /* キリバン */
   table {{ width: 100%; border-collapse: collapse; font-size: 14px; }}
   th, td {{ padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }}
-  th {{ color: var(--muted); font-weight: 500; }}
   .price {{ text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }}
   .band-upper td {{ color: var(--short); }}
   .band-lower td {{ color: var(--long); }}
@@ -179,7 +285,7 @@ def render_dashboard(signal: dict, market: dict, sector_signals: list[dict], out
     padding: 12px 16px;
     border-radius: 0 8px 8px 0;
     margin-top: 12px;
-    font-size: 14px;
+    font-size: 13px;
   }}
   .footer-note {{
     margin-top: 32px;
@@ -190,10 +296,6 @@ def render_dashboard(signal: dict, market: dict, sector_signals: list[dict], out
     color: var(--muted);
     border: 1px solid var(--border);
   }}
-  .us-market {{ display: flex; gap: 16px; }}
-  .us-market .item {{ flex: 1; }}
-  .pct-pos {{ color: var(--long); }}
-  .pct-neg {{ color: var(--short); }}
 
   /* セクターカード */
   .sector-grid {{
@@ -207,12 +309,7 @@ def render_dashboard(signal: dict, market: dict, sector_signals: list[dict], out
     border-radius: 10px;
     padding: 14px 16px;
   }}
-  .sector-header {{
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 8px;
-  }}
+  .sector-header {{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }}
   .sector-title {{ font-size: 15px; }}
   .sector-avg {{ font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }}
   .dir-bullish {{ color: var(--long); }}
@@ -227,29 +324,12 @@ def render_dashboard(signal: dict, market: dict, sector_signals: list[dict], out
     margin: 8px 0 12px 0;
     overflow: hidden;
   }}
-  .sector-bar-center {{
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: var(--border);
-  }}
-  .sector-bar {{
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    border-radius: 3px;
-  }}
+  .sector-bar-center {{ position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--border); }}
+  .sector-bar {{ position: absolute; top: 0; bottom: 0; border-radius: 3px; }}
   .bar-bullish {{ background: var(--long); }}
   .bar-bearish {{ background: var(--short); }}
   .bar-neutral {{ background: var(--neutral); }}
-  .sector-detail {{
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.7;
-  }}
-  .sector-detail .sector-us-label {{ color: var(--muted); }}
+  .sector-detail {{ font-size: 12px; color: var(--muted); line-height: 1.7; }}
   .sector-detail .sector-jp-stocks {{ color: var(--text); }}
   .sector-detail .sector-action {{ margin-top: 4px; font-size: 13px; color: var(--text); }}
   .sector-note {{
@@ -266,48 +346,57 @@ def render_dashboard(signal: dict, market: dict, sector_signals: list[dict], out
 <div class="container">
   <header>
     <h1>📊 Daytrade Signal Board</h1>
-    <div style="text-align: right;">
+    <div class="header-right">
       <div class="timestamp">Updated: {datetime.fromisoformat(market['timestamp']).strftime('%Y-%m-%d %H:%M JST')}</div>
-      <a href="./backtest_report.html" style="color: #fbbf24; text-decoration: none; font-size: 13px;">🧪 バックテスト検証レポート →</a>
+      <a href="./backtest_report.html" class="report-link">🧪 バックテスト検証レポート →</a>
     </div>
   </header>
 
-  <!-- 朝一鞘取りシグナル -->
+  <!-- 本日の日経デイトレ方針（最上段・最重要） -->
   <section>
-    <div class="card">
-      <h2>朝一先物鞘取りシグナル</h2>
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-        <div>
-          <div class="big-number">{sayatori_badge}</div>
-          <div class="sub">
-            日経先物: <b>{format_jpy(sayatori['futures_price'])}</b> /
-            現物: <b>{format_jpy(sayatori['spot_price'])}</b>
+    <div class="direction-card">
+      <h2 style="margin: 0 0 14px 0; font-size: 14px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em;">
+        本日の日経デイトレ方針
+      </h2>
+      {direction_verdict_html}
+
+      <div class="direction-meta">
+        <div class="direction-meta-item">
+          <div class="direction-meta-label">前日米国市場</div>
+          <div class="us-indices">
+            {us_indices_html}
           </div>
-          <div class="sub" style="font-size: 16px; margin-top: 4px;">
-            現対: <b style="color: {'var(--accent)' if hivol else 'var(--muted)'};">{sayatori['diff']:+,.0f}円</b>
-            <span style="color: {hivol_color}; margin-left: 8px;">{hivol_label}</span>
+        </div>
+        <div class="direction-meta-item">
+          <div class="direction-meta-label">日経先物 現対</div>
+          <div class="futures-value" style="color: {futures_diff_color};">{futures_diff:+,.0f}円</div>
+          <div class="sub" style="font-size: 12px;">
+            先物: {format_jpy(market['nikkei_futures']['price'])} / 現物終値: {format_jpy(market['nikkei']['prev_close'])}
           </div>
         </div>
       </div>
-      <div class="rationale">{sayatori['rationale']}</div>
+
+      <div class="reasons-list">
+        <ul>{reasons_html}</ul>
+      </div>
     </div>
   </section>
 
   <!-- 米→日セクター連動予測 -->
   <section>
-    <h2 class="section-title">🔁 米→日セクター連動予測（前日米騰落率ベース）</h2>
+    <h2 class="section-title">🔁 米→日セクター連動予測</h2>
     <div class="sector-grid">
       {sector_cards_html}
     </div>
     <div class="rationale" style="margin-top: 16px;">
-      連動強度: 🔗🔗🔗 = 強い / 🔗🔗 = 中程度 / 🔗 = 弱め（PDFサロン記事での言及頻度に基づく経験則）。
-      しきい値: ±1.5%以上で「強いシグナル」、±0.5〜1.5%で「弱いシグナル」、それ未満は「様子見」。
+      連動強度: 🔗🔗🔗 = 強 / 🔗🔗 = 中 / 🔗 = 弱（PDFサロン記事での言及頻度に基づく経験則）。
+      しきい値: ±1.5%以上=強シグナル / ±0.5〜1.5%=弱シグナル / それ未満=様子見。
     </div>
   </section>
 
-  <!-- キリバン値幅とキリバン節目 -->
+  <!-- キリバン水準 -->
   <section>
-    <h2 class="section-title">📐 キリバン水準</h2>
+    <h2 class="section-title">📐 キリバン水準（参考）</h2>
     <div class="grid">
       <div class="card">
         <h2>キリバン値幅（前日終値 ± N円）</h2>
@@ -345,49 +434,8 @@ def render_dashboard(signal: dict, market: dict, sector_signals: list[dict], out
           </tbody>
         </table>
         <div class="rationale" style="margin-top: 16px;">
-          丸い数字（0円で終わる水準）は常にレジサポ候補。軟調相場ほど機能しやすい。
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 米国市場と1570 -->
-  <section>
-    <h2 class="section-title">🌐 市場データ</h2>
-    <div class="grid">
-      <div class="card">
-        <h2>前日米国市場（指数）</h2>
-        <div class="us-market">
-          <div class="item">
-            <div class="sub">ナスダック</div>
-            <div class="big-number" style="font-size: 24px;">
-              <span class="{'pct-pos' if us_nasdaq >= 0 else 'pct-neg'}">{us_nasdaq:+.2f}%</span>
-            </div>
-          </div>
-          <div class="item">
-            <div class="sub">SOX指数</div>
-            <div class="big-number" style="font-size: 24px;">
-              <span class="{'pct-pos' if us_sox >= 0 else 'pct-neg'}">{us_sox:+.2f}%</span>
-            </div>
-          </div>
-        </div>
-        <div class="rationale" style="margin-top: 16px;">
-          米日連動/非連動の判断材料。米上げに対して先物が追随してないなら「米強日弱」警戒。
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>1570 日経レバETF</h2>
-        <table>
-          <tbody>
-            <tr>
-              <td>前日終値</td>
-              <td class="price">{format_jpy(market['etf_1570']['prev_close'])}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="rationale" style="margin-top: 16px;">
-          ハイボラ時は1570が遅れて寄り付くことがあり、1570の寄り値が日経の天底を決めることも多い。
+          丸い数字は常にレジサポ候補。「買い」の日は下降トレンドから節目タッチで買い、
+          「売り」の日は上昇トレンドから節目タッチで売り。
         </div>
       </div>
     </div>
@@ -396,8 +444,8 @@ def render_dashboard(signal: dict, market: dict, sector_signals: list[dict], out
   <div class="footer-note">
     <b>⚠️ ディスクレーマー</b>:
     これは個人研究用のシグナルボードです。投資判断は自己責任で。
-    セクター連動はPDFサロン記事からの経験則抽出であり、統計的有意性は自分でバックテストして検証してください。
-    全ての関連性は過去のパターンに過ぎず、将来の値動きを保証するものではありません。
+    全ての判定はPDFサロン記事から抽出した経験則に基づく仮説であり、
+    統計的有意性は自分でバックテストレポートで検証してください。
   </div>
 </div>
 </body>
