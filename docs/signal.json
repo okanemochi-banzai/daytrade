@@ -1,20 +1,21 @@
 {
   "market": {
-    "timestamp": "2026-04-23T01:22:51.852934+09:00",
+    "timestamp": "2026-04-23T01:24:00.040055+09:00",
     "nikkei": {
       "prev_close": 59349.171875,
       "change_pct": 0.8912575007443913
     },
     "nikkei_futures": {
-      "price": 59660.0
+      "price": 59680.0
     },
     "etf_1570": {
       "prev_close": 58850.0
     },
     "us_markets": {
-      "nasdaq_change_pct": 1.2883963578105062,
-      "sox_change_pct": 1.9245262276789576
-    }
+      "nasdaq_change_pct": 1.279798085515771,
+      "sox_change_pct": 1.961221179658179
+    },
+    "us_sector_changes": {}
   },
   "signal": {
     "kiriban_bands": {
@@ -29,13 +30,13 @@
       }
     },
     "sayatori_signal": {
-      "futures_price": 59660.0,
+      "futures_price": 59680.0,
       "spot_price": 59349.171875,
-      "diff": 310.828125,
-      "abs_diff": 310.828125,
+      "diff": 330.828125,
+      "abs_diff": 330.828125,
       "direction": "neutral",
       "threshold": 1000,
-      "rationale": "現対+311円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
+      "rationale": "現対+331円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
     },
     "round_number_levels": {
       "current_price": 59349.171875,
