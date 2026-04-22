@@ -1,5 +1,5 @@
 """
-本日の日経方針 + セクター連動予測 + キリバン水準 のHTMLダッシュボード生成
+警告バナー + 日経方針 + 為替コモディティ + セクター連動 + キリバン のHTMLダッシュボード
 """
 
 from __future__ import annotations
@@ -10,6 +10,46 @@ from pathlib import Path
 
 def format_jpy(n: float) -> str:
     return f"¥{n:,.0f}"
+
+
+# ----- 警告バナー -----
+
+def render_warnings_banner(warnings: list[dict]) -> str:
+    if not warnings:
+        return ""
+
+    items = ""
+    for w in warnings:
+        sev = w["severity"]
+        if sev == "high":
+            border_color = "var(--short)"
+            bg_color = "rgba(239, 68, 68, 0.08)"
+            badge_color = "var(--short)"
+        elif sev == "medium":
+            border_color = "var(--accent)"
+            bg_color = "rgba(251, 191, 36, 0.08)"
+            badge_color = "var(--accent)"
+        else:
+            border_color = "var(--muted)"
+            bg_color = "rgba(107, 114, 128, 0.08)"
+            badge_color = "var(--muted)"
+
+        items += f"""
+        <div class="warning-item" style="border-left-color: {border_color}; background: {bg_color};">
+          <div class="warning-header">
+            <span style="color: {badge_color}; font-weight: 600;">{w['label']}</span>
+          </div>
+          <div class="warning-message">{w['message']}</div>
+          <div class="warning-action">→ {w['action']}</div>
+        </div>
+        """
+    return f"""
+    <section>
+      <div class="warnings-wrap">
+        {items}
+      </div>
+    </section>
+    """
 
 
 # ----- 日経方針カード -----
@@ -46,7 +86,6 @@ def render_direction_verdict(direction_signal: dict) -> str:
 
 
 def render_us_indices_row(indices: list[dict]) -> str:
-    """米3指数の横並び表示"""
     items = ""
     for idx in indices:
         pct = idx["change_pct"]
@@ -63,6 +102,62 @@ def render_us_indices_row(indices: list[dict]) -> str:
         </div>
         """
     return items
+
+
+# ----- 為替・コモディティカード -----
+
+def render_market_context(ctx: dict) -> str:
+    items_html = ""
+    for item in ctx["items"]:
+        direction = item["direction"]
+        if direction == "up":
+            color = "var(--long)"
+            arrow = "▲"
+        elif direction == "down":
+            color = "var(--short)"
+            arrow = "▼"
+        else:
+            color = "var(--muted)"
+            arrow = "━"
+
+        if item["name"] == "ドル円":
+            price_str = f"{item['current']:.2f}"
+        elif item["name"] == "ゴールド":
+            price_str = f"${item['current']:,.1f}"
+        else:
+            price_str = f"${item['current']:,.2f}"
+
+        items_html += f"""
+        <div class="fx-item">
+          <div class="fx-header">
+            <span class="fx-name">{item['name']}</span>
+            <span class="fx-symbol">{item['symbol']}</span>
+          </div>
+          <div class="fx-price-row">
+            <span class="fx-price">{price_str}</span>
+            <span class="fx-change" style="color: {color};">{arrow} {item['change_pct']:+.2f}%</span>
+          </div>
+          <div class="fx-interpretation">{item['interpretation']}</div>
+        </div>
+        """
+
+    combined_html = ""
+    if ctx.get("combined_note"):
+        combined_html = f"""
+        <div class="fx-combined">
+          {ctx['combined_note']}
+        </div>
+        """
+
+    return f"""
+    <section>
+      <h2 class="section-title">💱 参考: 為替・コモディティ</h2>
+      <div class="fx-grid">
+        {items_html}
+      </div>
+      {combined_html}
+    </section>
+    """
 
 
 # ----- セクターカード -----
@@ -126,6 +221,8 @@ def render_sector_card(sig: dict) -> str:
 
 
 def render_dashboard(
+    warnings: list[dict],
+    market_context: dict,
     direction_signal: dict,
     kiriban_signal: dict,
     market: dict,
@@ -152,6 +249,9 @@ def render_dashboard(
     direction_verdict_html = render_direction_verdict(direction_signal)
     us_indices_html = render_us_indices_row(direction_signal["us_indices"])
     reasons_html = "".join(f"<li>{r}</li>" for r in direction_signal["reasons"])
+
+    warnings_html = render_warnings_banner(warnings)
+    market_context_html = render_market_context(market_context)
 
     futures_diff = direction_signal["futures_diff"]
     futures_diff_color = (
@@ -188,7 +288,7 @@ def render_dashboard(
   }}
   .container {{ max-width: 1280px; margin: 0 auto; padding: 24px; }}
   header {{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; flex-wrap: wrap; gap: 8px; }}
-  h1 {{ margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.02em; }}
+  h1 {{ margin: 0; font-size: 20px; font-weight: 600; }}
   .header-right {{ text-align: right; }}
   .timestamp {{ color: var(--muted); font-size: 13px; }}
   .report-link {{ color: var(--accent); text-decoration: none; font-size: 13px; }}
@@ -204,73 +304,67 @@ def render_dashboard(
     border-bottom: 1px solid var(--border);
     letter-spacing: 0.02em;
   }}
-  .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
-  @media (max-width: 800px) {{ .grid {{ grid-template-columns: 1fr; }} }}
-  .card {{
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-  }}
-  .card h2 {{ margin: 0 0 12px 0; font-size: 14px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }}
-  .sub {{ color: var(--muted); font-size: 14px; }}
 
-  /* 日経方針カード */
-  .direction-card {{
+  /* 警告バナー */
+  .warnings-wrap {{ display: flex; flex-direction: column; gap: 10px; }}
+  .warning-item {{
     background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 16px;
   }}
-  .direction-meta {{
-    margin-top: 16px;
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-  }}
-  .direction-meta-item {{
-    flex: 1;
-    min-width: 200px;
-  }}
-  .direction-meta-label {{
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }}
-  .us-indices {{
-    display: flex;
-    gap: 16px;
-    margin-top: 6px;
-  }}
-  .us-idx-item {{
-    flex: 1;
-    text-align: center;
-    padding: 8px;
-    background: var(--panel-2);
-    border-radius: 6px;
-  }}
+  .warning-header {{ font-size: 15px; margin-bottom: 4px; }}
+  .warning-message {{ font-size: 13px; color: var(--text); margin: 4px 0; }}
+  .warning-action {{ font-size: 12px; color: var(--muted); margin-top: 6px; }}
+
+  /* 日経方針 */
+  .direction-card {{ background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }}
+  .direction-meta {{ margin-top: 16px; display: flex; gap: 20px; flex-wrap: wrap; }}
+  .direction-meta-item {{ flex: 1; min-width: 200px; }}
+  .direction-meta-label {{ font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }}
+  .us-indices {{ display: flex; gap: 16px; margin-top: 6px; }}
+  .us-idx-item {{ flex: 1; text-align: center; padding: 8px; background: var(--panel-2); border-radius: 6px; }}
   .us-idx-name {{ font-size: 11px; color: var(--muted); }}
   .us-idx-pct {{ font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }}
-  .futures-value {{
-    font-size: 22px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    margin-top: 6px;
-  }}
-  .reasons-list {{
-    margin-top: 16px;
-    padding: 14px 16px;
+  .futures-value {{ font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 6px; }}
+  .sub {{ color: var(--muted); font-size: 14px; }}
+  .reasons-list {{ margin-top: 16px; padding: 14px 16px; background: var(--panel-2); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; }}
+  .reasons-list ul {{ margin: 0; padding-left: 18px; font-size: 13px; }}
+  .reasons-list li {{ margin: 4px 0; }}
+  .time-nodes-note {{
+    margin-top: 12px;
+    padding: 10px 14px;
     background: var(--panel-2);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    border: 1px dashed var(--border);
+  }}
+  .time-nodes-note b {{ color: var(--accent); }}
+
+  /* 為替・コモディティ */
+  .fx-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }}
+  .fx-item {{
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }}
+  .fx-header {{ display: flex; justify-content: space-between; align-items: baseline; }}
+  .fx-name {{ font-weight: 600; font-size: 14px; }}
+  .fx-symbol {{ font-size: 11px; color: var(--muted); }}
+  .fx-price-row {{ display: flex; justify-content: space-between; align-items: baseline; margin: 6px 0; }}
+  .fx-price {{ font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }}
+  .fx-change {{ font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }}
+  .fx-interpretation {{ font-size: 12px; color: var(--muted); margin-top: 6px; border-top: 1px dashed var(--border); padding-top: 6px; }}
+  .fx-combined {{
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(251, 191, 36, 0.1);
     border-left: 3px solid var(--accent);
     border-radius: 0 8px 8px 0;
-  }}
-  .reasons-list ul {{
-    margin: 0;
-    padding-left: 18px;
     font-size: 13px;
   }}
-  .reasons-list li {{ margin: 4px 0; }}
 
   /* キリバン */
   table {{ width: 100%; border-collapse: collapse; font-size: 14px; }}
@@ -287,28 +381,18 @@ def render_dashboard(
     margin-top: 12px;
     font-size: 13px;
   }}
+  .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
+  @media (max-width: 800px) {{ .grid {{ grid-template-columns: 1fr; }} }}
+  .card {{ background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }}
+  .card h2 {{ margin: 0 0 12px 0; font-size: 14px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }}
   .footer-note {{
-    margin-top: 32px;
-    padding: 16px;
-    background: var(--panel);
-    border-radius: 8px;
-    font-size: 12px;
-    color: var(--muted);
-    border: 1px solid var(--border);
+    margin-top: 32px; padding: 16px; background: var(--panel);
+    border-radius: 8px; font-size: 12px; color: var(--muted); border: 1px solid var(--border);
   }}
 
   /* セクターカード */
-  .sector-grid {{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 14px;
-  }}
-  .sector-card {{
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-  }}
+  .sector-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }}
+  .sector-card {{ background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }}
   .sector-header {{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }}
   .sector-title {{ font-size: 15px; }}
   .sector-avg {{ font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }}
@@ -316,14 +400,7 @@ def render_dashboard(
   .dir-bearish {{ color: var(--short); }}
   .dir-neutral {{ color: var(--neutral); }}
   .corr {{ font-size: 10px; margin-left: 4px; opacity: 0.7; }}
-  .sector-bar-container {{
-    position: relative;
-    height: 6px;
-    background: var(--panel-2);
-    border-radius: 3px;
-    margin: 8px 0 12px 0;
-    overflow: hidden;
-  }}
+  .sector-bar-container {{ position: relative; height: 6px; background: var(--panel-2); border-radius: 3px; margin: 8px 0 12px 0; overflow: hidden; }}
   .sector-bar-center {{ position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--border); }}
   .sector-bar {{ position: absolute; top: 0; bottom: 0; border-radius: 3px; }}
   .bar-bullish {{ background: var(--long); }}
@@ -332,14 +409,7 @@ def render_dashboard(
   .sector-detail {{ font-size: 12px; color: var(--muted); line-height: 1.7; }}
   .sector-detail .sector-jp-stocks {{ color: var(--text); }}
   .sector-detail .sector-action {{ margin-top: 4px; font-size: 13px; color: var(--text); }}
-  .sector-note {{
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px dashed var(--border);
-    font-size: 11px;
-    color: var(--muted);
-    line-height: 1.5;
-  }}
+  .sector-note {{ margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); font-size: 11px; color: var(--muted); line-height: 1.5; }}
 </style>
 </head>
 <body>
@@ -352,7 +422,9 @@ def render_dashboard(
     </div>
   </header>
 
-  <!-- 本日の日経デイトレ方針（最上段・最重要） -->
+  {warnings_html}
+
+  <!-- 本日の日経デイトレ方針 -->
   <section>
     <div class="direction-card">
       <h2 style="margin: 0 0 14px 0; font-size: 14px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em;">
@@ -379,8 +451,15 @@ def render_dashboard(
       <div class="reasons-list">
         <ul>{reasons_html}</ul>
       </div>
+
+      <div class="time-nodes-note">
+        💡 <b>時間節目</b>: 9:40・10:00（前場トレ転）／12:30（後場寄り）／14:00・14:30（後場トレ転）
+        で方向転換・手仕舞いが発生しやすい。ただし相場に大変動あるほど時間節目も貫通する点に留意。
+      </div>
     </div>
   </section>
+
+  {market_context_html}
 
   <!-- 米→日セクター連動予測 -->
   <section>
@@ -389,7 +468,7 @@ def render_dashboard(
       {sector_cards_html}
     </div>
     <div class="rationale" style="margin-top: 16px;">
-      連動強度: 🔗🔗🔗 = 強 / 🔗🔗 = 中 / 🔗 = 弱（PDFサロン記事での言及頻度に基づく経験則）。
+      連動強度: 🔗🔗🔗 = 強 / 🔗🔗 = 中 / 🔗 = 弱。
       しきい値: ±1.5%以上=強シグナル / ±0.5〜1.5%=弱シグナル / それ未満=様子見。
     </div>
   </section>
