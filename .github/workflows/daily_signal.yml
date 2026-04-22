@@ -34,6 +34,7 @@ jobs:
         run: |
           python tests/test_kiriban.py
           python tests/test_sector_mapping.py
+          python tests/test_market_direction.py
 
       - name: Generate signal dashboard
         run: python src/main.py
