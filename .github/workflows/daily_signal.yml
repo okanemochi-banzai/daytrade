@@ -35,6 +35,8 @@ jobs:
           python tests/test_kiriban.py
           python tests/test_sector_mapping.py
           python tests/test_market_direction.py
+          python tests/test_warnings_module.py
+          python tests/test_market_context.py
 
       - name: Generate signal dashboard
         run: python src/main.py
@@ -44,11 +46,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/
-          if ! git diff --quiet --cached; then
-            git commit -m "chore: update signal dashboard"
-            git pull --rebase origin main
-            git push
-          fi
+          git diff --quiet --cached || git commit -m "chore: update signal dashboard"
+          git push
 
   deploy-pages:
     needs: generate-signal
