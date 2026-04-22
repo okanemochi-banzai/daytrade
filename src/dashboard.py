@@ -266,7 +266,10 @@ def render_dashboard(signal: dict, market: dict, sector_signals: list[dict], out
 <div class="container">
   <header>
     <h1>📊 Daytrade Signal Board</h1>
-    <div class="timestamp">Updated: {datetime.fromisoformat(market['timestamp']).strftime('%Y-%m-%d %H:%M JST')}</div>
+    <div style="text-align: right;">
+      <div class="timestamp">Updated: {datetime.fromisoformat(market['timestamp']).strftime('%Y-%m-%d %H:%M JST')}</div>
+      <a href="./backtest_report.html" style="color: #fbbf24; text-decoration: none; font-size: 13px;">🧪 バックテスト検証レポート →</a>
+    </div>
   </header>
 
   <!-- 朝一鞘取りシグナル -->
