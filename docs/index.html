@@ -25,10 +25,20 @@
     color: var(--text);
     line-height: 1.6;
   }
-  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 24px; }
   header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
   h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.02em; }
   .timestamp { color: var(--muted); font-size: 13px; }
+  section { margin-bottom: 28px; }
+  section > h2.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 14px 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.02em;
+  }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
   .card {
@@ -72,41 +82,333 @@
   .us-market .item { flex: 1; }
   .pct-pos { color: var(--long); }
   .pct-neg { color: var(--short); }
+
+  /* セクターカード */
+  .sector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 14px;
+  }
+  .sector-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .sector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .sector-title { font-size: 15px; }
+  .sector-avg { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .dir-bullish { color: var(--long); }
+  .dir-bearish { color: var(--short); }
+  .dir-neutral { color: var(--neutral); }
+  .corr { font-size: 10px; margin-left: 4px; opacity: 0.7; }
+  .sector-bar-container {
+    position: relative;
+    height: 6px;
+    background: var(--panel-2);
+    border-radius: 3px;
+    margin: 8px 0 12px 0;
+    overflow: hidden;
+  }
+  .sector-bar-center {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+  .sector-bar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 3px;
+  }
+  .bar-bullish { background: var(--long); }
+  .bar-bearish { background: var(--short); }
+  .bar-neutral { background: var(--neutral); }
+  .sector-detail {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .sector-detail .sector-us-label { color: var(--muted); }
+  .sector-detail .sector-jp-stocks { color: var(--text); }
+  .sector-detail .sector-action { margin-top: 4px; font-size: 13px; color: var(--text); }
+  .sector-note {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
     <h1>📊 Daytrade Signal Board</h1>
-    <div class="timestamp">Updated: 2026-04-23 01:24 JST</div>
+    <div class="timestamp">Updated: 2026-04-23 01:25 JST</div>
   </header>
 
-  <!-- 最重要: 朝一鞘取りシグナル -->
-  <div class="card" style="margin-bottom: 20px;">
-    <h2>朝一先物鞘取りシグナル</h2>
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-      <div>
-        <div class="big-number"><span class="badge badge-neutral">様子見</span></div>
-        <div class="sub">
-          日経先物: <b>¥59,680</b> /
-          現物: <b>¥59,349</b>
-        </div>
-        <div class="sub" style="font-size: 16px; margin-top: 4px;">
-          現対: <b style="color: var(--muted);">+331円</b>
-          <span style="color: #6b7280; margin-left: 8px;">😴 通常ボラ</span>
+  <!-- 朝一鞘取りシグナル -->
+  <section>
+    <div class="card">
+      <h2>朝一先物鞘取りシグナル</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <div class="big-number"><span class="badge badge-neutral">様子見</span></div>
+          <div class="sub">
+            日経先物: <b>¥59,695</b> /
+            現物: <b>¥59,349</b>
+          </div>
+          <div class="sub" style="font-size: 16px; margin-top: 4px;">
+            現対: <b style="color: var(--muted);">+346円</b>
+            <span style="color: #6b7280; margin-left: 8px;">😴 通常ボラ</span>
+          </div>
         </div>
       </div>
+      <div class="rationale">現対+346円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。</div>
     </div>
-    <div class="rationale">現対+331円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。</div>
-  </div>
+  </section>
 
-  <div class="grid">
-    <!-- キリバン値幅 -->
-    <div class="card">
-      <h2>キリバン値幅（前日終値 ± N円）</h2>
-      <table>
-        <tbody>
-          
+  <!-- 米→日セクター連動予測 -->
+  <section>
+    <h2 class="section-title">🔁 米→日セクター連動予測（前日米騰落率ベース）</h2>
+    <div class="sector-grid">
+      
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ▲ <b>ストレージ半導体</b> <span class="corr corr-high" title="PDFで繰り返し言及される強い連動">🔗🔗🔗</span>
+        </div>
+        <div class="sector-avg dir-bullish">
+          +3.40%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-bullish" style="width: 100%; left: 50%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: サンディスク等ストレージ</div>
+        <div class="sector-jp-stocks">日: キオクシア</div>
+        <div class="sector-action">→ <b class="dir-bullish">買い目線</b></div>
+      </div>
+      <div class="sector-note">キオクシアはサンディスクの動きに強く連動。半導体カルテットとは別扱いが鉄則</div>
+    </div>
+    
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ▲ <b>SaaS・ソフトウェア</b> <span class="corr corr-med" title="条件次第で連動">🔗🔗</span>
+        </div>
+        <div class="sector-avg dir-bullish">
+          +2.58%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-bullish" style="width: 86.14817582954977%; left: 50%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: セールスフォース・MSFT等</div>
+        <div class="sector-jp-stocks">日: 富士通、NEC、NRI、オービック</div>
+        <div class="sector-action">→ <b class="dir-bullish">買い目線</b></div>
+      </div>
+      <div class="sector-note">「アメリカ下げ戦犯・ソフトウェアSaaS系」として頻出。下げ時の連動が特に強い</div>
+    </div>
+    
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ▼ <b>通信（配当ディフェンシブ）</b> <span class="corr corr-med" title="条件次第で連動">🔗🔗</span>
+        </div>
+        <div class="sector-avg dir-bearish">
+          -2.07%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-bearish" style="width: 68.91576702473435%; left: -18.91576702473435%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: ベライゾン・AT&T</div>
+        <div class="sector-jp-stocks">日: KDDI、NTT、ソフトバンク</div>
+        <div class="sector-action">→ <b class="dir-bearish">売り目線</b></div>
+      </div>
+      <div class="sector-note">ディフェンシブ資金フロー時に連動。日本特有の材料（粉飾等）には非連動</div>
+    </div>
+    
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ▲ <b>半導体</b> <span class="corr corr-high" title="PDFで繰り返し言及される強い連動">🔗🔗🔗</span>
+        </div>
+        <div class="sector-avg dir-bullish">
+          +1.67%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-bullish" style="width: 55.75829792932622%; left: 50%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: SOX指数（半導体）</div>
+        <div class="sector-jp-stocks">日: 東京エレクトロン、アドバンテスト、ディスコ、レーザーテック</div>
+        <div class="sector-action">→ <b class="dir-bullish">買い目線</b></div>
+      </div>
+      <div class="sector-note">SOX指数との連動が最も強いグループ（半導体カルテット）</div>
+    </div>
+    
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ▼ <b>軍需・防衛</b> <span class="corr corr-high" title="PDFで繰り返し言及される強い連動">🔗🔗🔗</span>
+        </div>
+        <div class="sector-avg dir-bearish">
+          -1.22%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-bearish" style="width: 40.629673490795895%; left: 9.370326509204105%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: ロッキード・RTX等</div>
+        <div class="sector-jp-stocks">日: 三菱重工業、IHI、川崎重工業</div>
+        <div class="sector-action">→ <b class="dir-bearish">やや売り目線</b></div>
+      </div>
+      <div class="sector-note">地政学リスク連動。戦争懸念時の強い順張りセクター</div>
+    </div>
+    
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ▼ <b>海運・物流</b> <span class="corr corr-low" title="連動は弱め">🔗</span>
+        </div>
+        <div class="sector-avg dir-bearish">
+          -1.13%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-bearish" style="width: 37.65959384129602%; left: 12.340406158703978%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: UPS・FedEx</div>
+        <div class="sector-jp-stocks">日: 日本郵船、商船三井、川崎汽船</div>
+        <div class="sector-action">→ <b class="dir-bearish">やや売り目線</b></div>
+      </div>
+      <div class="sector-note">連動は弱め。海運は日本独自の材料（海峡・BDI）の影響が大きい</div>
+    </div>
+    
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ▲ <b>エネルギー（原油）</b> <span class="corr corr-high" title="PDFで繰り返し言及される強い連動">🔗🔗🔗</span>
+        </div>
+        <div class="sector-avg dir-bullish">
+          +0.84%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-bullish" style="width: 28.12177051095081%; left: 50%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: エクソン・シェブロン等</div>
+        <div class="sector-jp-stocks">日: INPEX、ENEOS、出光興産、コスモエネルギー</div>
+        <div class="sector-action">→ <b class="dir-bullish">やや買い目線</b></div>
+      </div>
+      <div class="sector-note">原油先物・XOM・CVXが上げればINPEX等は高確率で連動</div>
+    </div>
+    
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ━ <b>建機</b> <span class="corr corr-high" title="PDFで繰り返し言及される強い連動">🔗🔗🔗</span>
+        </div>
+        <div class="sector-avg dir-neutral">
+          +0.18%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-neutral" style="width: 0%; left: 50%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: キャタピラー・ディアー</div>
+        <div class="sector-jp-stocks">日: コマツ、日立建機、クボタ</div>
+        <div class="sector-action">→ <b class="dir-neutral">様子見目線</b></div>
+      </div>
+      <div class="sector-note">CAT・DEの動きから翌朝のコマツ方向が読みやすい</div>
+    </div>
+    
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ━ <b>電線（CAT連動系）</b> <span class="corr corr-med" title="条件次第で連動">🔗🔗</span>
+        </div>
+        <div class="sector-avg dir-neutral">
+          +0.18%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-neutral" style="width: 0%; left: 50%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: キャタピラー・ディアー</div>
+        <div class="sector-jp-stocks">日: フジクラ、住友電工、古河電工</div>
+        <div class="sector-action">→ <b class="dir-neutral">様子見目線</b></div>
+      </div>
+      <div class="sector-note">インフラ投資テーマでCAT・DEと一緒に動く傾向。PDFでは「電線3種」としてコマツとセットで語られる</div>
+    </div>
+    
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ━ <b>生活防衛（配当王）</b> <span class="corr corr-low" title="連動は弱め">🔗</span>
+        </div>
+        <div class="sector-avg dir-neutral">
+          +0.00%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-neutral" style="width: 0%; left: 50%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: コカコーラ・P&G等</div>
+        <div class="sector-jp-stocks">日: 花王、味の素、明治HD、キッコーマン</div>
+        <div class="sector-action">→ <b class="dir-neutral">様子見目線</b></div>
+      </div>
+      <div class="sector-note">連動は弱い。配当ディフェンシブ資金フロー時のみ同方向</div>
+    </div>
+    
+    </div>
+    <div class="rationale" style="margin-top: 16px;">
+      連動強度: 🔗🔗🔗 = 強い / 🔗🔗 = 中程度 / 🔗 = 弱め（PDFサロン記事での言及頻度に基づく経験則）。
+      しきい値: ±1.5%以上で「強いシグナル」、±0.5〜1.5%で「弱いシグナル」、それ未満は「様子見」。
+    </div>
+  </section>
+
+  <!-- キリバン値幅とキリバン節目 -->
+  <section>
+    <h2 class="section-title">📐 キリバン水準</h2>
+    <div class="grid">
+      <div class="card">
+        <h2>キリバン値幅（前日終値 ± N円）</h2>
+        <table>
+          <tbody>
+            
         <tr class="band-upper">
           <td>前日比 +1500</td>
           <td class="price">¥60,849</td>
@@ -131,86 +433,90 @@
           <td>前日比 -1500</td>
           <td class="price">¥57,849</td>
         </tr>
-          <tr class="prev-close-row">
-            <td>前日終値</td>
-            <td class="price">¥59,349</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="rationale" style="margin-top: 16px;">
-        通常ボラ時は効きにくい。参考値として。
-        ±500/1000/1500円が天底・レジサポとして意識される水準。
-      </div>
-    </div>
-
-    <!-- 株価キリバン節目 -->
-    <div class="card">
-      <h2>株価キリバン節目（1,000円単位）</h2>
-      <table>
-        <tbody>
-          <tr class="band-upper">
-            <td>レジスタンス</td>
-            <td class="price">¥60,000</td>
-          </tr>
-          <tr class="prev-close-row">
-            <td>現在値</td>
-            <td class="price">¥59,349</td>
-          </tr>
-          <tr class="band-lower">
-            <td>サポート</td>
-            <td class="price">¥59,000</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="rationale" style="margin-top: 16px;">
-        丸い数字（0円で終わる水準）は常にレジサポ候補。軟調相場ほど機能しやすい。
-      </div>
-    </div>
-
-    <!-- 前日米国市場 -->
-    <div class="card">
-      <h2>前日米国市場</h2>
-      <div class="us-market">
-        <div class="item">
-          <div class="sub">ナスダック</div>
-          <div class="big-number" style="font-size: 24px;">
-            <span class="pct-pos">+1.28%</span>
-          </div>
-        </div>
-        <div class="item">
-          <div class="sub">SOX指数</div>
-          <div class="big-number" style="font-size: 24px;">
-            <span class="pct-pos">+1.96%</span>
-          </div>
+            <tr class="prev-close-row">
+              <td>前日終値</td>
+              <td class="price">¥59,349</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="rationale" style="margin-top: 16px;">
+          通常ボラ時は効きにくい。参考値として。
+          ±500/1000/1500円が天底・レジサポとして意識される水準。
         </div>
       </div>
-      <div class="rationale" style="margin-top: 16px;">
-        米日連動/非連動の判断材料。米上げに対して先物が追随してないなら「米強日弱」警戒。
-      </div>
-    </div>
 
-    <!-- 1570 -->
-    <div class="card">
-      <h2>1570 日経レバETF</h2>
-      <table>
-        <tbody>
-          <tr>
-            <td>前日終値</td>
-            <td class="price">¥58,850</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="rationale" style="margin-top: 16px;">
-        ハイボラ時は1570が遅れて寄り付くことがあり、1570の寄り値が日経の天底を決めることも多い。
+      <div class="card">
+        <h2>株価キリバン節目（1,000円単位）</h2>
+        <table>
+          <tbody>
+            <tr class="band-upper">
+              <td>レジスタンス</td>
+              <td class="price">¥60,000</td>
+            </tr>
+            <tr class="prev-close-row">
+              <td>現在値</td>
+              <td class="price">¥59,349</td>
+            </tr>
+            <tr class="band-lower">
+              <td>サポート</td>
+              <td class="price">¥59,000</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="rationale" style="margin-top: 16px;">
+          丸い数字（0円で終わる水準）は常にレジサポ候補。軟調相場ほど機能しやすい。
+        </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- 米国市場と1570 -->
+  <section>
+    <h2 class="section-title">🌐 市場データ</h2>
+    <div class="grid">
+      <div class="card">
+        <h2>前日米国市場（指数）</h2>
+        <div class="us-market">
+          <div class="item">
+            <div class="sub">ナスダック</div>
+            <div class="big-number" style="font-size: 24px;">
+              <span class="pct-pos">+1.26%</span>
+            </div>
+          </div>
+          <div class="item">
+            <div class="sub">SOX指数</div>
+            <div class="big-number" style="font-size: 24px;">
+              <span class="pct-pos">+1.94%</span>
+            </div>
+          </div>
+        </div>
+        <div class="rationale" style="margin-top: 16px;">
+          米日連動/非連動の判断材料。米上げに対して先物が追随してないなら「米強日弱」警戒。
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>1570 日経レバETF</h2>
+        <table>
+          <tbody>
+            <tr>
+              <td>前日終値</td>
+              <td class="price">¥58,850</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="rationale" style="margin-top: 16px;">
+          ハイボラ時は1570が遅れて寄り付くことがあり、1570の寄り値が日経の天底を決めることも多い。
+        </div>
+      </div>
+    </div>
+  </section>
 
   <div class="footer-note">
     <b>⚠️ ディスクレーマー</b>:
     これは個人研究用のシグナルボードです。投資判断は自己責任で。
-    全てのシグナルは過去のアノマリーやサロン記事で言及された手法に基づく仮説であり、
-    統計的有意性は自分でバックテストして検証してください。
+    セクター連動はPDFサロン記事からの経験則抽出であり、統計的有意性は自分でバックテストして検証してください。
+    全ての関連性は過去のパターンに過ぎず、将来の値動きを保証するものではありません。
   </div>
 </div>
 </body>
