@@ -1,0 +1,244 @@
+"""
+キリバンシグナルHTMLダッシュボード生成
+"""
+
+from __future__ import annotations
+
+from datetime import datetime
+from pathlib import Path
+
+
+def format_jpy(n: float) -> str:
+    return f"¥{n:,.0f}"
+
+
+def render_sayatori_badge(direction: str) -> str:
+    if direction == "long":
+        return '<span class="badge badge-long">鞘取りロング</span>'
+    if direction == "short":
+        return '<span class="badge badge-short">鞘取りショート</span>'
+    return '<span class="badge badge-neutral">様子見</span>'
+
+
+def render_dashboard(signal: dict, market: dict, output_path: Path) -> None:
+    """HTMLダッシュボードを生成してファイルに書き出す。"""
+    kiriban = signal["kiriban_bands"]
+    sayatori = signal["sayatori_signal"]
+    round_levels = signal["round_number_levels"]
+    hivol = signal["high_volatility"]
+
+    # キリバン水準テーブル（上→下）
+    band_rows = ""
+    for key in ["+1500", "+1000", "+500", "-500", "-1000", "-1500"]:
+        price = kiriban["bands"][key]
+        label_class = "band-upper" if key.startswith("+") else "band-lower"
+        band_rows += f"""
+        <tr class="{label_class}">
+          <td>前日比 {key}</td>
+          <td class="price">{format_jpy(price)}</td>
+        </tr>"""
+
+    sayatori_badge = render_sayatori_badge(sayatori["direction"])
+    hivol_label = "🔥 ハイボラ" if hivol else "😴 通常ボラ"
+    hivol_color = "#ef4444" if hivol else "#6b7280"
+
+    us_nasdaq = market["us_markets"]["nasdaq_change_pct"]
+    us_sox = market["us_markets"]["sox_change_pct"]
+
+    html = f"""<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daytrade Signal Board</title>
+<style>
+  :root {{
+    --bg: #0b1220;
+    --panel: #151f33;
+    --panel-2: #1d2842;
+    --text: #e6edf3;
+    --muted: #8ca0b3;
+    --accent: #fbbf24;
+    --long: #10b981;
+    --short: #ef4444;
+    --neutral: #6b7280;
+    --border: #2a3654;
+  }}
+  * {{ box-sizing: border-box; }}
+  body {{
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }}
+  .container {{ max-width: 1200px; margin: 0 auto; padding: 24px; }}
+  header {{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }}
+  h1 {{ margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.02em; }}
+  .timestamp {{ color: var(--muted); font-size: 13px; }}
+  .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
+  @media (max-width: 800px) {{ .grid {{ grid-template-columns: 1fr; }} }}
+  .card {{
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }}
+  .card h2 {{ margin: 0 0 12px 0; font-size: 14px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }}
+  .big-number {{ font-size: 32px; font-weight: 700; margin: 8px 0; font-variant-numeric: tabular-nums; }}
+  .sub {{ color: var(--muted); font-size: 14px; }}
+  .badge {{ display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }}
+  .badge-long {{ background: rgba(16, 185, 129, 0.15); color: var(--long); }}
+  .badge-short {{ background: rgba(239, 68, 68, 0.15); color: var(--short); }}
+  .badge-neutral {{ background: rgba(107, 114, 128, 0.15); color: var(--neutral); }}
+  table {{ width: 100%; border-collapse: collapse; font-size: 14px; }}
+  th, td {{ padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }}
+  th {{ color: var(--muted); font-weight: 500; }}
+  .price {{ text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }}
+  .band-upper td {{ color: var(--short); }}
+  .band-lower td {{ color: var(--long); }}
+  .prev-close-row td {{ color: var(--accent); font-weight: 700; border-top: 2px solid var(--accent); border-bottom: 2px solid var(--accent); }}
+  .rationale {{
+    background: var(--panel-2);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 12px;
+    font-size: 14px;
+  }}
+  .footer-note {{
+    margin-top: 32px;
+    padding: 16px;
+    background: var(--panel);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }}
+  .us-market {{ display: flex; gap: 16px; }}
+  .us-market .item {{ flex: 1; }}
+  .pct-pos {{ color: var(--long); }}
+  .pct-neg {{ color: var(--short); }}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>📊 Daytrade Signal Board</h1>
+    <div class="timestamp">Updated: {datetime.fromisoformat(market['timestamp']).strftime('%Y-%m-%d %H:%M JST')}</div>
+  </header>
+
+  <!-- 最重要: 朝一鞘取りシグナル -->
+  <div class="card" style="margin-bottom: 20px;">
+    <h2>朝一先物鞘取りシグナル</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <div class="big-number">{sayatori_badge}</div>
+        <div class="sub">
+          日経先物: <b>{format_jpy(sayatori['futures_price'])}</b> /
+          現物: <b>{format_jpy(sayatori['spot_price'])}</b>
+        </div>
+        <div class="sub" style="font-size: 16px; margin-top: 4px;">
+          現対: <b style="color: {'var(--accent)' if hivol else 'var(--muted)'};">{sayatori['diff']:+,.0f}円</b>
+          <span style="color: {hivol_color}; margin-left: 8px;">{hivol_label}</span>
+        </div>
+      </div>
+    </div>
+    <div class="rationale">{sayatori['rationale']}</div>
+  </div>
+
+  <div class="grid">
+    <!-- キリバン値幅 -->
+    <div class="card">
+      <h2>キリバン値幅（前日終値 ± N円）</h2>
+      <table>
+        <tbody>
+          {band_rows}
+          <tr class="prev-close-row">
+            <td>前日終値</td>
+            <td class="price">{format_jpy(kiriban['prev_close'])}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="rationale" style="margin-top: 16px;">
+        {"機能しやすい相場（ハイボラ）" if hivol else "通常ボラ時は効きにくい。参考値として"}。
+        ±500/1000/1500円が天底・レジサポとして意識される水準。
+      </div>
+    </div>
+
+    <!-- 株価キリバン節目 -->
+    <div class="card">
+      <h2>株価キリバン節目（{round_levels['step']:,}円単位）</h2>
+      <table>
+        <tbody>
+          <tr class="band-upper">
+            <td>レジスタンス</td>
+            <td class="price">{format_jpy(round_levels['resistance'])}</td>
+          </tr>
+          <tr class="prev-close-row">
+            <td>現在値</td>
+            <td class="price">{format_jpy(round_levels['current_price'])}</td>
+          </tr>
+          <tr class="band-lower">
+            <td>サポート</td>
+            <td class="price">{format_jpy(round_levels['support'])}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="rationale" style="margin-top: 16px;">
+        丸い数字（0円で終わる水準）は常にレジサポ候補。軟調相場ほど機能しやすい。
+      </div>
+    </div>
+
+    <!-- 前日米国市場 -->
+    <div class="card">
+      <h2>前日米国市場</h2>
+      <div class="us-market">
+        <div class="item">
+          <div class="sub">ナスダック</div>
+          <div class="big-number" style="font-size: 24px;">
+            <span class="{'pct-pos' if us_nasdaq >= 0 else 'pct-neg'}">{us_nasdaq:+.2f}%</span>
+          </div>
+        </div>
+        <div class="item">
+          <div class="sub">SOX指数</div>
+          <div class="big-number" style="font-size: 24px;">
+            <span class="{'pct-pos' if us_sox >= 0 else 'pct-neg'}">{us_sox:+.2f}%</span>
+          </div>
+        </div>
+      </div>
+      <div class="rationale" style="margin-top: 16px;">
+        米日連動/非連動の判断材料。米上げに対して先物が追随してないなら「米強日弱」警戒。
+      </div>
+    </div>
+
+    <!-- 1570 -->
+    <div class="card">
+      <h2>1570 日経レバETF</h2>
+      <table>
+        <tbody>
+          <tr>
+            <td>前日終値</td>
+            <td class="price">{format_jpy(market['etf_1570']['prev_close'])}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="rationale" style="margin-top: 16px;">
+        ハイボラ時は1570が遅れて寄り付くことがあり、1570の寄り値が日経の天底を決めることも多い。
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <b>⚠️ ディスクレーマー</b>:
+    これは個人研究用のシグナルボードです。投資判断は自己責任で。
+    全てのシグナルは過去のアノマリーやサロン記事で言及された手法に基づく仮説であり、
+    統計的有意性は自分でバックテストして検証してください。
+  </div>
+</div>
+</body>
+</html>"""
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(html, encoding="utf-8")
+    print(f"Dashboard written to {output_path}")
