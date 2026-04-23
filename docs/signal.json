@@ -1,17 +1,17 @@
 {
   "market": {
-    "timestamp": "2026-04-23T09:26:58.874511+09:00",
+    "timestamp": "2026-04-23T10:11:16.703841+09:00",
     "nikkei": {
-      "prev_close": 59694.4609375,
-      "change_pct": 0.5817925534449486,
+      "prev_close": 59931.890625,
+      "change_pct": 0.5807271282642246,
       "week_is_positive": true,
       "month_is_positive": true
     },
     "nikkei_futures": {
-      "price": 59270.0
+      "price": 60050.0
     },
     "etf_1570": {
-      "prev_close": 59190.0
+      "prev_close": 59550.0
     },
     "us_markets": {
       "nasdaq_change_pct": 1.6389369701556245,
@@ -19,12 +19,12 @@
       "sox_change_pct": 2.7163982300177247
     },
     "fx_commodities": {
-      "usdjpy_price": 159.4250030517578,
-      "usdjpy_change_pct": 0.03262908570869083,
-      "gold_price": 4712.2998046875,
-      "gold_change_pct": 0.29584332182570616,
-      "oil_price": 96.95999908447266,
-      "oil_change_pct": 5.242594133340761
+      "usdjpy_price": 159.3780059814453,
+      "usdjpy_change_pct": 0.0012542283532424037,
+      "gold_price": 4760.89990234375,
+      "gold_change_pct": 1.3302401093789884,
+      "oil_price": 93.19999694824219,
+      "oil_change_pct": 1.1614020696006477
     },
     "us_sector_changes": {
       "ADBE": 3.5439801056694975,
@@ -68,29 +68,29 @@
       {
         "name": "ドル円",
         "symbol": "USD/JPY",
-        "current": 159.4250030517578,
-        "change_pct": 0.03262908570869083,
+        "current": 159.3780059814453,
+        "change_pct": 0.0012542283532424037,
         "direction": "flat",
         "interpretation": "変動なし"
       },
       {
         "name": "ゴールド",
         "symbol": "XAU/USD",
-        "current": 4712.2998046875,
-        "change_pct": 0.29584332182570616,
-        "direction": "flat",
-        "interpretation": "変動なし"
+        "current": 4760.89990234375,
+        "change_pct": 1.3302401093789884,
+        "direction": "up",
+        "interpretation": "ゴールド上昇 → インフレ懸念 or リスクオフ。住友金属鉱山等の金鉱株に追い風"
       },
       {
         "name": "WTI原油",
         "symbol": "CL",
-        "current": 96.95999908447266,
-        "change_pct": 5.242594133340761,
+        "current": 93.19999694824219,
+        "change_pct": 1.1614020696006477,
         "direction": "up",
-        "interpretation": "原油急騰 → リスクオフ懸念。エネルギー株（INPEX・ENEOS等）に追い風、他はリスクオフ警戒"
+        "interpretation": "原油上昇 → エネルギー株に追い風"
       }
     ],
-    "combined_note": null
+    "combined_note": "⚠️ ゴールド & 原油の同時上昇 → ハイパーインフレ/重度リスクオフの兆候。株全体に警戒。"
   },
   "direction": {
     "verdict": "hands_off",
@@ -114,37 +114,37 @@
       }
     ],
     "us_consensus_direction": "bullish",
-    "futures_diff": -424.4609375,
+    "futures_diff": 118.109375,
     "futures_aligned": false,
     "reasons": [
       "米指数が揃って上げ（ナスダック, ダウ, SOX）",
-      "米強日弱の非連動（現対-424円）",
+      "先物の方向性が不明確（現対+118円）",
       "→ 米日非連動のため、方向性読みづらく様子見"
     ]
   },
   "kiriban": {
     "kiriban_bands": {
-      "prev_close": 59694.4609375,
+      "prev_close": 59931.890625,
       "bands": {
-        "-1500": 58194.4609375,
-        "-1000": 58694.4609375,
-        "-500": 59194.4609375,
-        "+500": 60194.4609375,
-        "+1000": 60694.4609375,
-        "+1500": 61194.4609375
+        "-1500": 58431.890625,
+        "-1000": 58931.890625,
+        "-500": 59431.890625,
+        "+500": 60431.890625,
+        "+1000": 60931.890625,
+        "+1500": 61431.890625
       }
     },
     "sayatori_signal": {
-      "futures_price": 59270.0,
-      "spot_price": 59694.4609375,
-      "diff": -424.4609375,
-      "abs_diff": 424.4609375,
+      "futures_price": 60050.0,
+      "spot_price": 59931.890625,
+      "diff": 118.109375,
+      "abs_diff": 118.109375,
       "direction": "neutral",
       "threshold": 1000,
-      "rationale": "現対-424円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
+      "rationale": "現対+118円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
     },
     "round_number_levels": {
-      "current_price": 59694.4609375,
+      "current_price": 59931.890625,
       "resistance": 60000.0,
       "support": 59000.0,
       "step": 1000
