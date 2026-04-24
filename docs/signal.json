@@ -1,17 +1,17 @@
 {
   "market": {
-    "timestamp": "2026-04-24T08:28:13.464437+09:00",
+    "timestamp": "2026-04-24T10:11:43.321523+09:00",
     "nikkei": {
-      "prev_close": 59585.859375,
-      "change_pct": 0.3988050591480885,
+      "prev_close": 59494.078125,
+      "change_pct": 0.5983197113798466,
       "week_is_positive": true,
       "month_is_positive": true
     },
     "nikkei_futures": {
-      "price": 58965.0
+      "price": 59555.0
     },
     "etf_1570": {
-      "prev_close": 57970.0
+      "prev_close": 58640.0
     },
     "us_markets": {
       "nasdaq_change_pct": -0.8884346814128086,
@@ -19,12 +19,12 @@
       "sox_change_pct": 1.708528906606932
     },
     "fx_commodities": {
-      "usdjpy_price": 159.71499633789062,
-      "usdjpy_change_pct": 0.14232402231644237,
-      "gold_price": 4702.7001953125,
-      "gold_change_pct": -0.6296841983623902,
-      "oil_price": 97.08999633789062,
-      "oil_change_pct": 4.442768173507661
+      "usdjpy_price": 159.78399658203125,
+      "usdjpy_change_pct": 0.18558761662370582,
+      "gold_price": 4716.7001953125,
+      "gold_change_pct": -0.3338574683042772,
+      "oil_price": 96.91999816894531,
+      "oil_change_pct": 4.259895786868717
     },
     "us_sector_changes": {
       "ADBE": -6.626555658391043,
@@ -83,24 +83,24 @@
       {
         "name": "ドル円",
         "symbol": "USD/JPY",
-        "current": 159.71499633789062,
-        "change_pct": 0.14232402231644237,
+        "current": 159.78399658203125,
+        "change_pct": 0.18558761662370582,
         "direction": "flat",
         "interpretation": "変動なし"
       },
       {
         "name": "ゴールド",
         "symbol": "XAU/USD",
-        "current": 4702.7001953125,
-        "change_pct": -0.6296841983623902,
+        "current": 4716.7001953125,
+        "change_pct": -0.3338574683042772,
         "direction": "down",
         "interpretation": "ゴールド小幅下落"
       },
       {
         "name": "WTI原油",
         "symbol": "CL",
-        "current": 97.08999633789062,
-        "change_pct": 4.442768173507661,
+        "current": 96.91999816894531,
+        "change_pct": 4.259895786868717,
         "direction": "up",
         "interpretation": "原油急騰 → リスクオフ懸念。エネルギー株（INPEX・ENEOS等）に追い風、他はリスクオフ警戒"
       }
@@ -108,9 +108,9 @@
     "combined_note": null
   },
   "direction": {
-    "verdict": "sell_bias",
-    "verdict_label": "売りポジ主体",
-    "confidence": "medium",
+    "verdict": "hands_off",
+    "verdict_label": "初心者手出し無用",
+    "confidence": "low",
     "us_indices": [
       {
         "name": "ナスダック",
@@ -129,37 +129,37 @@
       }
     ],
     "us_consensus_direction": "bearish",
-    "futures_diff": -620.859375,
-    "futures_aligned": true,
+    "futures_diff": 60.921875,
+    "futures_aligned": false,
     "reasons": [
       "米指数が揃って下げ（ナスダック, ダウ）",
-      "日経先物が米に追随（現対-621円）",
-      "→ 米日連動の下落相場として売り目線"
+      "先物の方向性が不明確（現対+61円）",
+      "→ 米日非連動のため、方向性読みづらく様子見"
     ]
   },
   "kiriban": {
     "kiriban_bands": {
-      "prev_close": 59585.859375,
+      "prev_close": 59494.078125,
       "bands": {
-        "-1500": 58085.859375,
-        "-1000": 58585.859375,
-        "-500": 59085.859375,
-        "+500": 60085.859375,
-        "+1000": 60585.859375,
-        "+1500": 61085.859375
+        "-1500": 57994.078125,
+        "-1000": 58494.078125,
+        "-500": 58994.078125,
+        "+500": 59994.078125,
+        "+1000": 60494.078125,
+        "+1500": 60994.078125
       }
     },
     "sayatori_signal": {
-      "futures_price": 58965.0,
-      "spot_price": 59585.859375,
-      "diff": -620.859375,
-      "abs_diff": 620.859375,
+      "futures_price": 59555.0,
+      "spot_price": 59494.078125,
+      "diff": 60.921875,
+      "abs_diff": 60.921875,
       "direction": "neutral",
       "threshold": 1000,
-      "rationale": "現対-621円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
+      "rationale": "現対+61円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
     },
     "round_number_levels": {
-      "current_price": 59585.859375,
+      "current_price": 59494.078125,
       "resistance": 60000.0,
       "support": 59000.0,
       "step": 1000
