@@ -1,30 +1,30 @@
 {
   "market": {
-    "timestamp": "2026-04-25T09:39:49.143800+09:00",
+    "timestamp": "2026-04-27T09:09:12.698030+09:00",
     "nikkei": {
       "prev_close": 59716.1796875,
       "change_pct": 0.973870433349644,
-      "week_is_positive": true,
+      "week_is_positive": null,
       "month_is_positive": true
     },
     "nikkei_futures": {
-      "price": 60120.0
+      "price": 60170.0
     },
     "etf_1570": {
       "prev_close": 59020.0
     },
     "us_markets": {
-      "nasdaq_change_pct": 1.6289774587229244,
+      "nasdaq_change_pct": 1.6289854507232526,
       "dow_change_pct": -0.16144566592851683,
-      "sox_change_pct": 4.317018550343121
+      "sox_change_pct": 4.3169797923657605
     },
     "fx_commodities": {
-      "usdjpy_price": 159.33299255371094,
-      "usdjpy_change_pct": -0.09719479313744506,
-      "gold_price": 4725.39990234375,
-      "gold_change_pct": 0.4314425679830203,
-      "oil_price": 94.87999725341797,
-      "oil_change_pct": -1.0119992030725222
+      "usdjpy_price": 159.53399658203125,
+      "usdjpy_change_pct": -0.13333423757488916,
+      "gold_price": 4695.60009765625,
+      "gold_change_pct": -0.5653962716375416,
+      "oil_price": 96.12000274658203,
+      "oil_change_pct": 1.8220351619714803
     },
     "us_sector_changes": {
       "ADBE": 2.7031579334498845,
@@ -50,7 +50,7 @@
       "NOW": 6.357630888483401,
       "NVDA": 4.322783464835034,
       "ORCL": -1.7018379968087083,
-      "PG": 1.6951381841361135,
+      "PG": 2.4609084603500975,
       "RTX": -2.8109361177573455,
       "SNDK": 6.163468806206063,
       "STX": -0.23314303947643555,
@@ -68,26 +68,26 @@
       {
         "name": "ドル円",
         "symbol": "USD/JPY",
-        "current": 159.33299255371094,
-        "change_pct": -0.09719479313744506,
+        "current": 159.53399658203125,
+        "change_pct": -0.13333423757488916,
         "direction": "flat",
         "interpretation": "変動なし"
       },
       {
         "name": "ゴールド",
         "symbol": "XAU/USD",
-        "current": 4725.39990234375,
-        "change_pct": 0.4314425679830203,
-        "direction": "up",
-        "interpretation": "ゴールド小幅上昇"
+        "current": 4695.60009765625,
+        "change_pct": -0.5653962716375416,
+        "direction": "down",
+        "interpretation": "ゴールド小幅下落"
       },
       {
         "name": "WTI原油",
         "symbol": "CL",
-        "current": 94.87999725341797,
-        "change_pct": -1.0119992030725222,
-        "direction": "down",
-        "interpretation": "原油下落 → エネルギー株に逆風"
+        "current": 96.12000274658203,
+        "change_pct": 1.8220351619714803,
+        "direction": "up",
+        "interpretation": "原油上昇 → エネルギー株に追い風"
       }
     ],
     "combined_note": null
@@ -99,7 +99,7 @@
     "us_indices": [
       {
         "name": "ナスダック",
-        "change_pct": 1.6289774587229244,
+        "change_pct": 1.6289854507232526,
         "direction": "bullish"
       },
       {
@@ -109,16 +109,16 @@
       },
       {
         "name": "SOX",
-        "change_pct": 4.317018550343121,
+        "change_pct": 4.3169797923657605,
         "direction": "bullish"
       }
     ],
     "us_consensus_direction": "bullish",
-    "futures_diff": 403.8203125,
+    "futures_diff": 453.8203125,
     "futures_aligned": true,
     "reasons": [
       "米指数が揃って上げ（ナスダック, SOX）",
-      "日経先物が米に追随（現対+404円）",
+      "日経先物が米に追随（現対+454円）",
       "→ 米日連動の上昇相場として買い目線"
     ]
   },
@@ -135,13 +135,13 @@
       }
     },
     "sayatori_signal": {
-      "futures_price": 60120.0,
+      "futures_price": 60170.0,
       "spot_price": 59716.1796875,
-      "diff": 403.8203125,
-      "abs_diff": 403.8203125,
+      "diff": 453.8203125,
+      "abs_diff": 453.8203125,
       "direction": "neutral",
       "threshold": 1000,
-      "rationale": "現対+404円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
+      "rationale": "現対+454円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
     },
     "round_number_levels": {
       "current_price": 59716.1796875,
@@ -293,7 +293,7 @@
     {
       "sector_name": "生活防衛（配当王）",
       "us_label": "コカコーラ・P&G等",
-      "us_avg_change_pct": 0.5542459183424553,
+      "us_avg_change_pct": 0.7456884873959513,
       "direction": "bullish",
       "signal_strength": "weak",
       "jp_stocks": [
@@ -304,7 +304,7 @@
       ],
       "correlation_strength": "low",
       "note": "連動は弱い。配当ディフェンシブ資金フロー時のみ同方向",
-      "rationale": "米コカコーラ・P&G等が平均+0.55%。花王・味の素・明治HD等はやや買い寄りで想定。"
+      "rationale": "米コカコーラ・P&G等が平均+0.75%。花王・味の素・明治HD等はやや買い寄りで想定。"
     }
   ]
 }
