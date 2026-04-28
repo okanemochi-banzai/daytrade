@@ -2,8 +2,9 @@ name: Daily Kiriban Signal
 
 on:
   schedule:
-    # 平日毎朝 8:40 JST (= 23:40 UTC 前日)
-    - cron: "40 23 * * 0-4"
+    # 平日毎朝 7:30 JST (= 22:30 UTC 前日)
+    # GitHub Actionsのcronは数十分遅延することがあるため、寄付き(9:00)に余裕を持って設定
+    - cron: "30 22 * * 0-4"
   workflow_dispatch:
   push:
     branches: [main]
@@ -37,6 +38,8 @@ jobs:
           python tests/test_market_direction.py
           python tests/test_warnings_module.py
           python tests/test_market_context.py
+          python tests/test_history.py
+          python tests/test_stock_picks.py
 
       - name: Generate signal dashboard
         run: python src/main.py
@@ -46,8 +49,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/
-          git diff --quiet --cached || git commit -m "chore: update signal dashboard"
-          git push
+          if ! git diff --quiet --cached; then
+            git commit -m "chore: update signal dashboard"
+            git pull --rebase origin main
+            git push
+          fi
 
   deploy-pages:
     needs: generate-signal
