@@ -170,6 +170,33 @@ def test_get_all_warnings_empty():
     print("✅ test_get_all_warnings_empty")
 
 
+def test_friday_suppresses_pre_holiday():
+    """金曜は friday_closing と pre_holiday の両方が出るが、pre_holiday は抑制される"""
+    warnings = get_all_warnings(
+        date(2026, 4, 24),  # 金曜
+        nikkei_week_is_positive=True,
+    )
+    types = [w.type for w in warnings]
+    assert "friday_closing" in types
+    assert "pre_holiday" not in types
+    print("✅ test_friday_suppresses_pre_holiday")
+
+
+def test_month_end_suppresses_pre_holiday():
+    """月末が金曜なら、月末警告のみ残り pre_holiday は除去される"""
+    # 2026/4/30 = 木曜なので別のケースで検証
+    # 2026/1/30 = 金曜 で月末
+    warnings = get_all_warnings(
+        date(2026, 1, 30),
+        nikkei_week_is_positive=True,
+        nikkei_month_is_positive=True,
+    )
+    types = [w.type for w in warnings]
+    assert "month_end" in types
+    assert "pre_holiday" not in types
+    print("✅ test_month_end_suppresses_pre_holiday")
+
+
 if __name__ == "__main__":
     test_japanese_holidays()
     test_is_trading_day()
@@ -186,4 +213,6 @@ if __name__ == "__main__":
     test_month_start_warning()
     test_get_all_warnings_multiple()
     test_get_all_warnings_empty()
+    test_friday_suppresses_pre_holiday()
+    test_month_end_suppresses_pre_holiday()
     print("\n🎉 All warnings tests passed!")
