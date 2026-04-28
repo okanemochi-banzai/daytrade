@@ -5,150 +5,205 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daytrade Signal Board</title>
 <style>
-  :root {
-    --bg: #0b1220;
-    --panel: #151f33;
-    --panel-2: #1d2842;
-    --text: #e6edf3;
-    --muted: #8ca0b3;
-    --accent: #fbbf24;
-    --long: #10b981;
-    --short: #ef4444;
-    --neutral: #6b7280;
-    --border: #2a3654;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-  }
-  .container { max-width: 1280px; margin: 0 auto; padding: 24px; }
-  header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; flex-wrap: wrap; gap: 8px; }
-  h1 { margin: 0; font-size: 20px; font-weight: 600; }
-  .header-right { text-align: right; }
-  .timestamp { color: var(--muted); font-size: 13px; }
-  .report-link { color: var(--accent); text-decoration: none; font-size: 13px; }
-  .report-link:hover { text-decoration: underline; }
 
-  section { margin-bottom: 28px; }
-  section > h2.section-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--accent);
-    margin: 0 0 14px 0;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--border);
-    letter-spacing: 0.02em;
-  }
+:root {
+  --bg: #0b1220;
+  --panel: #151f33;
+  --panel-2: #1d2842;
+  --text: #e6edf3;
+  --muted: #8ca0b3;
+  --accent: #fbbf24;
+  --long: #10b981;
+  --short: #ef4444;
+  --neutral: #6b7280;
+  --border: #2a3654;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+.container { max-width: 1280px; margin: 0 auto; padding: 24px; }
+header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+h1 { margin: 0; font-size: 20px; font-weight: 600; }
+.header-right { text-align: right; }
+.timestamp { color: var(--muted); font-size: 13px; }
+.report-link { color: var(--accent); text-decoration: none; font-size: 13px; }
+.report-link:hover { text-decoration: underline; }
 
-  /* 警告バナー */
-  .warnings-wrap { display: flex; flex-direction: column; gap: 10px; }
-  .warning-item {
-    background: var(--panel);
-    border-left: 4px solid var(--accent);
-    border-radius: 0 10px 10px 0;
-    padding: 12px 16px;
-  }
-  .warning-header { font-size: 15px; margin-bottom: 4px; }
-  .warning-message { font-size: 13px; color: var(--text); margin: 4px 0; }
-  .warning-action { font-size: 12px; color: var(--muted); margin-top: 6px; }
+section { margin-bottom: 28px; }
+section > h2.section-title {
+  font-size: 16px; font-weight: 600; color: var(--accent);
+  margin: 0 0 14px 0; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+  letter-spacing: 0.02em;
+}
+.footer-note {
+  margin-top: 32px; padding: 16px; background: var(--panel);
+  border-radius: 8px; font-size: 12px; color: var(--muted); border: 1px solid var(--border);
+}
 
-  /* 日経方針 */
-  .direction-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
-  .direction-meta { margin-top: 16px; display: flex; gap: 20px; flex-wrap: wrap; }
-  .direction-meta-item { flex: 1; min-width: 200px; }
-  .direction-meta-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
-  .us-indices { display: flex; gap: 16px; margin-top: 6px; }
-  .us-idx-item { flex: 1; text-align: center; padding: 8px; background: var(--panel-2); border-radius: 6px; }
-  .us-idx-name { font-size: 11px; color: var(--muted); }
-  .us-idx-pct { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }
-  .futures-value { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 6px; }
-  .sub { color: var(--muted); font-size: 14px; }
-  .reasons-list { margin-top: 16px; padding: 14px 16px; background: var(--panel-2); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; }
-  .reasons-list ul { margin: 0; padding-left: 18px; font-size: 13px; }
-  .reasons-list li { margin: 4px 0; }
-  .time-nodes-note {
-    margin-top: 12px;
-    padding: 10px 14px;
-    background: var(--panel-2);
-    border-radius: 8px;
-    font-size: 12px;
-    color: var(--muted);
-    border: 1px dashed var(--border);
-  }
-  .time-nodes-note b { color: var(--accent); }
 
-  /* 為替・コモディティ */
-  .fx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
-  .fx-item {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-  }
-  .fx-header { display: flex; justify-content: space-between; align-items: baseline; }
-  .fx-name { font-weight: 600; font-size: 14px; }
-  .fx-symbol { font-size: 11px; color: var(--muted); }
-  .fx-price-row { display: flex; justify-content: space-between; align-items: baseline; margin: 6px 0; }
-  .fx-price { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .fx-change { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
-  .fx-interpretation { font-size: 12px; color: var(--muted); margin-top: 6px; border-top: 1px dashed var(--border); padding-top: 6px; }
-  .fx-combined {
-    margin-top: 12px;
-    padding: 10px 14px;
-    background: rgba(251, 191, 36, 0.1);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 8px 8px 0;
-    font-size: 13px;
-  }
+/* 警告バナー */
+.warnings-wrap { display: flex; flex-direction: column; gap: 10px; }
+.warning-item {
+  background: var(--panel);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 16px;
+}
+.warning-message { font-size: 13px; color: var(--text); margin: 4px 0; }
+.warning-action { font-size: 12px; color: var(--muted); margin-top: 6px; }
 
-  /* キリバン */
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
-  .price { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
-  .band-upper td { color: var(--short); }
-  .band-lower td { color: var(--long); }
-  .prev-close-row td { color: var(--accent); font-weight: 700; border-top: 2px solid var(--accent); border-bottom: 2px solid var(--accent); }
-  .rationale {
-    background: var(--panel-2);
-    border-left: 3px solid var(--accent);
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    margin-top: 12px;
-    font-size: 13px;
-  }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
-  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-  .card h2 { margin: 0 0 12px 0; font-size: 14px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
-  .footer-note {
-    margin-top: 32px; padding: 16px; background: var(--panel);
-    border-radius: 8px; font-size: 12px; color: var(--muted); border: 1px solid var(--border);
-  }
+/* 日経方針 */
+.direction-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+.direction-meta { margin-top: 16px; display: flex; gap: 20px; flex-wrap: wrap; }
+.direction-meta-item { flex: 1; min-width: 200px; }
+.direction-meta-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.us-indices { display: flex; gap: 16px; margin-top: 6px; }
+.us-idx-item { flex: 1; text-align: center; padding: 8px; background: var(--panel-2); border-radius: 6px; }
+.us-idx-name { font-size: 11px; color: var(--muted); }
+.us-idx-pct { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.futures-value { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 6px; }
+.sub { color: var(--muted); font-size: 14px; }
+.reasons-list { margin-top: 16px; padding: 14px 16px; background: var(--panel-2); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; }
+.reasons-list ul { margin: 0; padding-left: 18px; font-size: 13px; }
+.reasons-list li { margin: 4px 0; }
+.time-nodes-note {
+  margin-top: 12px; padding: 10px 14px; background: var(--panel-2);
+  border-radius: 8px; font-size: 12px; color: var(--muted); border: 1px dashed var(--border);
+}
+.time-nodes-note b { color: var(--accent); }
 
-  /* セクターカード */
-  .sector-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
-  .sector-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
-  .sector-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-  .sector-title { font-size: 15px; }
-  .sector-avg { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .dir-bullish { color: var(--long); }
-  .dir-bearish { color: var(--short); }
-  .dir-neutral { color: var(--neutral); }
-  .corr { font-size: 10px; margin-left: 4px; opacity: 0.7; }
-  .sector-bar-container { position: relative; height: 6px; background: var(--panel-2); border-radius: 3px; margin: 8px 0 12px 0; overflow: hidden; }
-  .sector-bar-center { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--border); }
-  .sector-bar { position: absolute; top: 0; bottom: 0; border-radius: 3px; }
-  .bar-bullish { background: var(--long); }
-  .bar-bearish { background: var(--short); }
-  .bar-neutral { background: var(--neutral); }
-  .sector-detail { font-size: 12px; color: var(--muted); line-height: 1.7; }
-  .sector-detail .sector-jp-stocks { color: var(--text); }
-  .sector-detail .sector-action { margin-top: 4px; font-size: 13px; color: var(--text); }
-  .sector-note { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); font-size: 11px; color: var(--muted); line-height: 1.5; }
+/* 為替・コモディティ */
+.fx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.fx-item { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.fx-header { display: flex; justify-content: space-between; align-items: baseline; }
+.fx-name { font-weight: 600; font-size: 14px; }
+.fx-symbol { font-size: 11px; color: var(--muted); }
+.fx-price-row { display: flex; justify-content: space-between; align-items: baseline; margin: 6px 0; }
+.fx-price { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.fx-change { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.fx-interpretation { font-size: 12px; color: var(--muted); margin-top: 6px; border-top: 1px dashed var(--border); padding-top: 6px; }
+.fx-combined {
+  margin-top: 12px; padding: 10px 14px;
+  background: rgba(251, 191, 36, 0.1);
+  border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0;
+  font-size: 13px;
+}
+
+/* セクター */
+.sector-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+.sector-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.sector-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.sector-title { font-size: 15px; }
+.sector-avg { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.dir-bullish { color: var(--long); }
+.dir-bearish { color: var(--short); }
+.dir-neutral { color: var(--neutral); }
+.sector-bar-container { position: relative; height: 6px; background: var(--panel-2); border-radius: 3px; margin: 8px 0 12px 0; overflow: hidden; }
+.sector-bar-center { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--border); }
+.sector-bar { position: absolute; top: 0; bottom: 0; border-radius: 3px; }
+.bar-bullish { background: var(--long); }
+.bar-bearish { background: var(--short); }
+.bar-neutral { background: var(--neutral); }
+.sector-detail { font-size: 12px; color: var(--muted); line-height: 1.7; }
+.sector-detail .sector-jp-stocks { color: var(--text); }
+.sector-detail .sector-action { margin-top: 4px; font-size: 13px; color: var(--text); }
+.sector-note { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+.vbadge { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; margin-left: 4px; cursor: help; }
+.vbadge-confirmed { background: rgba(16, 185, 129, 0.18); color: var(--long); }
+.vbadge-weak { background: rgba(251, 191, 36, 0.18); color: var(--accent); }
+.vbadge-contradicted { background: rgba(239, 68, 68, 0.18); color: var(--short); }
+
+.contradicted-details {
+  margin-top: 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+.contradicted-details summary {
+  cursor: pointer; color: var(--muted); font-size: 13px;
+  list-style: none;
+}
+.contradicted-details summary::before { content: "▸ "; }
+.contradicted-details[open] summary::before { content: "▾ "; }
+
+.rationale {
+  background: var(--panel-2);
+  border-left: 3px solid var(--accent);
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+/* 注目銘柄（手出し無用日） */
+.picks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.pick-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 16px;
+}
+.pick-card.pick-bullish { border-left-color: var(--long); }
+.pick-card.pick-bearish { border-left-color: var(--short); }
+.pick-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.pick-title { font-size: 15px; }
+.pick-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.pick-badge-bullish { background: rgba(16, 185, 129, 0.15); color: var(--long); }
+.pick-badge-bearish { background: rgba(239, 68, 68, 0.15); color: var(--short); }
+.pick-stocks { list-style: none; padding: 0; margin: 0 0 10px 0; }
+.pick-stocks li { padding: 4px 0; font-size: 14px; border-bottom: 1px dashed var(--border); }
+.pick-stocks li:last-child { border-bottom: none; }
+.pick-stocks .muted { color: var(--muted); }
+.pick-stocks .tiny { font-size: 11px; }
+.pick-rationale { font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 8px; margin-top: 6px; }
+.picks-empty {
+  background: var(--panel);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+.picks-disclaimer {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(251, 191, 36, 0.05);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.picks-disclaimer b { color: var(--text); }
+
+/* 履歴 */
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 13px;
+}
+.history-table th {
+  background: var(--panel-2); color: var(--muted);
+  font-weight: 500; text-align: left; padding: 10px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.history-table td { padding: 10px; border-top: 1px solid var(--border); }
+.history-table tr:first-child td { border-top: none; }
+.history-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.hist-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+.hist-buy { background: rgba(16, 185, 129, 0.15); color: var(--long); }
+.hist-sell { background: rgba(239, 68, 68, 0.15); color: var(--short); }
+.hist-handsoff { background: rgba(107, 114, 128, 0.15); color: var(--neutral); }
 </style>
 </head>
 <body>
@@ -156,7 +211,7 @@
   <header>
     <h1>📊 Daytrade Signal Board</h1>
     <div class="header-right">
-      <div class="timestamp">Updated: 2026-04-28 10:19 JST</div>
+      <div class="timestamp">Updated: 2026-04-29 00:40 JST</div>
       <a href="./backtest_report.html" class="report-link">🧪 バックテスト検証レポート →</a>
     </div>
   </header>
@@ -170,11 +225,11 @@
         本日の日経デイトレ方針
       </h2>
       
-    <div style="background: rgba(107, 114, 128, 0.15); color: var(--neutral); padding: 16px 20px; border-radius: 12px; display: inline-flex; align-items: center; gap: 12px;">
-      <div style="font-size: 32px;">⏸️</div>
+    <div style="background: rgba(239, 68, 68, 0.15); color: var(--short); padding: 16px 20px; border-radius: 12px; display: inline-flex; align-items: center; gap: 12px;">
+      <div style="font-size: 32px;">📉</div>
       <div>
-        <div style="font-size: 24px; font-weight: 700;">初心者手出し無用</div>
-        <div style="font-size: 12px; opacity: 0.8; margin-top: 2px;">確度:低</div>
+        <div style="font-size: 24px; font-weight: 700;">売りポジ主体</div>
+        <div style="font-size: 12px; opacity: 0.8; margin-top: 2px;">確度:高</div>
       </div>
     </div>
     
@@ -186,32 +241,32 @@
             
         <div class="us-idx-item">
           <div class="us-idx-name">ナスダック</div>
-          <div class="us-idx-pct" style="color: var(--muted);">+0.20%</div>
+          <div class="us-idx-pct" style="color: var(--short);">-1.35%</div>
         </div>
         
         <div class="us-idx-item">
           <div class="us-idx-name">ダウ</div>
-          <div class="us-idx-pct" style="color: var(--muted);">-0.13%</div>
+          <div class="us-idx-pct" style="color: var(--muted);">+0.11%</div>
         </div>
         
         <div class="us-idx-item">
           <div class="us-idx-name">SOX</div>
-          <div class="us-idx-pct" style="color: var(--short);">-1.00%</div>
+          <div class="us-idx-pct" style="color: var(--short);">-4.62%</div>
         </div>
         
           </div>
         </div>
         <div class="direction-meta-item">
           <div class="direction-meta-label">日経先物 現対</div>
-          <div class="futures-value" style="color: var(--muted);">+57円</div>
+          <div class="futures-value" style="color: var(--short);">-1,477円</div>
           <div class="sub" style="font-size: 12px;">
-            先物: ¥60,250 / 現物終値: ¥60,193
+            先物: ¥59,060 / 現物終値: ¥60,537
           </div>
         </div>
       </div>
 
       <div class="reasons-list">
-        <ul><li>米指数に個体差あり（ナスダック=+0.20% / ダウ=-0.13% / SOX-）</li><li>先物の方向性が不明確（現対+57円）</li><li>→ 米指数の個体差が大きく、レンジ・優柔不断相場想定</li></ul>
+        <ul><li>米指数が揃って下げ（ナスダック, SOX）</li><li>日経先物が米に追随（現対-1477円）</li><li>→ 米日連動の下落相場として売り目線</li></ul>
       </div>
 
       <div class="time-nodes-note">
@@ -232,8 +287,8 @@
             <span class="fx-symbol">USD/JPY</span>
           </div>
           <div class="fx-price-row">
-            <span class="fx-price">159.49</span>
-            <span class="fx-change" style="color: var(--muted);">━ -0.05%</span>
+            <span class="fx-price">159.57</span>
+            <span class="fx-change" style="color: var(--muted);">━ -0.00%</span>
           </div>
           <div class="fx-interpretation">変動なし</div>
         </div>
@@ -244,10 +299,10 @@
             <span class="fx-symbol">XAU/USD</span>
           </div>
           <div class="fx-price-row">
-            <span class="fx-price">$4,704.9</span>
-            <span class="fx-change" style="color: var(--short);">▼ -0.37%</span>
+            <span class="fx-price">$4,590.6</span>
+            <span class="fx-change" style="color: var(--short);">▼ -1.81%</span>
           </div>
-          <div class="fx-interpretation">ゴールド小幅下落</div>
+          <div class="fx-interpretation">ゴールド下落 → リスクオン転換の可能性</div>
         </div>
         
         <div class="fx-item">
@@ -256,8 +311,8 @@
             <span class="fx-symbol">CL</span>
           </div>
           <div class="fx-price-row">
-            <span class="fx-price">$97.14</span>
-            <span class="fx-change" style="color: var(--long);">▲ +2.90%</span>
+            <span class="fx-price">$99.74</span>
+            <span class="fx-change" style="color: var(--long);">▲ +3.50%</span>
           </div>
           <div class="fx-interpretation">原油急騰 → リスクオフ懸念。エネルギー株（INPEX・ENEOS等）に追い風、他はリスクオフ警戒</div>
         </div>
@@ -267,28 +322,30 @@
     </section>
     
 
-  <!-- 米→日セクター連動予測 -->
-  <section>
-    <h2 class="section-title">🔁 米→日セクター連動予測</h2>
-    <div class="sector-grid">
-      
+  
+
+  
+    <section>
+      <h2 class="section-title">🔁 米→日セクター連動予測</h2>
+      <div class="sector-grid">
+        
     <div class="sector-card">
       <div class="sector-header">
         <div class="sector-title">
-          ▲ <b>ストレージ半導体</b> <span class="corr" title="強連動">🔗🔗🔗</span>
+          ▼ <b>ストレージ半導体</b> <span class="vbadge vbadge-confirmed" title="実測r=+0.53">✓ 検証済</span>
         </div>
-        <div class="sector-avg dir-bullish">
-          +2.98%
+        <div class="sector-avg dir-bearish">
+          -5.43%
         </div>
       </div>
       <div class="sector-bar-container">
         <div class="sector-bar-center"></div>
-        <div class="sector-bar bar-bullish" style="width: 99.35277320582992%; left: 50%;"></div>
+        <div class="sector-bar bar-bearish" style="width: 100%; left: -50%;"></div>
       </div>
       <div class="sector-detail">
         <div class="sector-us-label">米: サンディスク等ストレージ</div>
         <div class="sector-jp-stocks">日: キオクシア</div>
-        <div class="sector-action">→ <b class="dir-bullish">買い目線</b></div>
+        <div class="sector-action">→ <b class="dir-bearish">売り目線</b></div>
       </div>
       <div class="sector-note">キオクシアはサンディスクの動きに強く連動。半導体カルテットとは別扱いが鉄則</div>
     </div>
@@ -296,36 +353,15 @@
     <div class="sector-card">
       <div class="sector-header">
         <div class="sector-title">
-          ▼ <b>通信（配当ディフェンシブ）</b> <span class="corr" title="中連動">🔗🔗</span>
+          ▼ <b>半導体</b> <span class="vbadge vbadge-confirmed" title="実測r=+0.58">✓ 検証済</span>
         </div>
         <div class="sector-avg dir-bearish">
-          -1.59%
+          -4.70%
         </div>
       </div>
       <div class="sector-bar-container">
         <div class="sector-bar-center"></div>
-        <div class="sector-bar bar-bearish" style="width: 52.86078987874242%; left: -2.8607898787424233%;"></div>
-      </div>
-      <div class="sector-detail">
-        <div class="sector-us-label">米: ベライゾン・AT&T</div>
-        <div class="sector-jp-stocks">日: KDDI、NTT、ソフトバンク</div>
-        <div class="sector-action">→ <b class="dir-bearish">売り目線</b></div>
-      </div>
-      <div class="sector-note">ディフェンシブ資金フロー時に連動。日本特有の材料（粉飾等）には非連動</div>
-    </div>
-    
-    <div class="sector-card">
-      <div class="sector-header">
-        <div class="sector-title">
-          ▼ <b>半導体</b> <span class="corr" title="強連動">🔗🔗🔗</span>
-        </div>
-        <div class="sector-avg dir-bearish">
-          -1.52%
-        </div>
-      </div>
-      <div class="sector-bar-container">
-        <div class="sector-bar-center"></div>
-        <div class="sector-bar bar-bearish" style="width: 50.78449812761955%; left: -0.7844981276195497%;"></div>
+        <div class="sector-bar bar-bearish" style="width: 100%; left: -50%;"></div>
       </div>
       <div class="sector-detail">
         <div class="sector-us-label">米: SOX指数（半導体）</div>
@@ -338,20 +374,20 @@
     <div class="sector-card">
       <div class="sector-header">
         <div class="sector-title">
-          ▼ <b>生活防衛（配当王）</b> <span class="corr" title="弱連動">🔗</span>
+          ▲ <b>生活防衛（配当王）</b> <span class="vbadge vbadge-confirmed" title="実測r=+0.36">✓ 検証済</span>
         </div>
-        <div class="sector-avg dir-bearish">
-          -1.26%
+        <div class="sector-avg dir-bullish">
+          +2.71%
         </div>
       </div>
       <div class="sector-bar-container">
         <div class="sector-bar-center"></div>
-        <div class="sector-bar bar-bearish" style="width: 41.90003655591606%; left: 8.09996344408394%;"></div>
+        <div class="sector-bar bar-bullish" style="width: 90.24010077375891%; left: 50%;"></div>
       </div>
       <div class="sector-detail">
         <div class="sector-us-label">米: コカコーラ・P&G等</div>
         <div class="sector-jp-stocks">日: 花王、味の素、明治HD、キッコーマン</div>
-        <div class="sector-action">→ <b class="dir-bearish">やや売り目線</b></div>
+        <div class="sector-action">→ <b class="dir-bullish">買い目線</b></div>
       </div>
       <div class="sector-note">連動は弱い。配当ディフェンシブ資金フロー時のみ同方向</div>
     </div>
@@ -359,20 +395,41 @@
     <div class="sector-card">
       <div class="sector-header">
         <div class="sector-title">
-          ▲ <b>海運・物流</b> <span class="corr" title="弱連動">🔗</span>
+          ▲ <b>エネルギー（原油）</b> <span class="vbadge vbadge-weak" title="実測r=+0.25">△ 弱連動</span>
         </div>
         <div class="sector-avg dir-bullish">
-          +0.56%
+          +2.50%
         </div>
       </div>
       <div class="sector-bar-container">
         <div class="sector-bar-center"></div>
-        <div class="sector-bar bar-bullish" style="width: 18.612981426482747%; left: 50%;"></div>
+        <div class="sector-bar bar-bullish" style="width: 83.37060214494737%; left: 50%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: エクソン・シェブロン等</div>
+        <div class="sector-jp-stocks">日: INPEX、ENEOS、出光興産、コスモエネルギー</div>
+        <div class="sector-action">→ <b class="dir-bullish">買い目線</b></div>
+      </div>
+      <div class="sector-note">原油先物・XOM・CVXが上げればINPEX等は高確率で連動</div>
+    </div>
+    
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ▼ <b>海運・物流</b> <span class="vbadge vbadge-weak" title="実測r=+0.14">△ 弱連動</span>
+        </div>
+        <div class="sector-avg dir-bearish">
+          -2.43%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-bearish" style="width: 81.10684731975275%; left: -31.106847319752745%;"></div>
       </div>
       <div class="sector-detail">
         <div class="sector-us-label">米: UPS・FedEx</div>
         <div class="sector-jp-stocks">日: 日本郵船、商船三井、川崎汽船</div>
-        <div class="sector-action">→ <b class="dir-bullish">やや買い目線</b></div>
+        <div class="sector-action">→ <b class="dir-bearish">売り目線</b></div>
       </div>
       <div class="sector-note">連動は弱め。海運は日本独自の材料（海峡・BDI）の影響が大きい</div>
     </div>
@@ -380,10 +437,52 @@
     <div class="sector-card">
       <div class="sector-header">
         <div class="sector-title">
-          ━ <b>SaaS・ソフトウェア</b> <span class="corr" title="中連動">🔗🔗</span>
+          ▼ <b>建機</b> <span class="vbadge vbadge-confirmed" title="実測r=+0.41">✓ 検証済</span>
+        </div>
+        <div class="sector-avg dir-bearish">
+          -1.10%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-bearish" style="width: 36.82487469455986%; left: 13.17512530544014%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: キャタピラー・ディアー</div>
+        <div class="sector-jp-stocks">日: コマツ、日立建機、クボタ</div>
+        <div class="sector-action">→ <b class="dir-bearish">やや売り目線</b></div>
+      </div>
+      <div class="sector-note">CAT・DEの動きから翌朝のコマツ方向が読みやすい</div>
+    </div>
+    
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ▼ <b>電線（CAT連動系）</b> <span class="vbadge vbadge-confirmed" title="実測r=+0.36">✓ 検証済</span>
+        </div>
+        <div class="sector-avg dir-bearish">
+          -1.10%
+        </div>
+      </div>
+      <div class="sector-bar-container">
+        <div class="sector-bar-center"></div>
+        <div class="sector-bar bar-bearish" style="width: 36.82487469455986%; left: 13.17512530544014%;"></div>
+      </div>
+      <div class="sector-detail">
+        <div class="sector-us-label">米: キャタピラー・ディアー</div>
+        <div class="sector-jp-stocks">日: フジクラ、住友電工、古河電工</div>
+        <div class="sector-action">→ <b class="dir-bearish">やや売り目線</b></div>
+      </div>
+      <div class="sector-note">インフラ投資テーマでCAT・DEと一緒に動く傾向。PDFでは「電線3種」としてコマツとセットで語られる</div>
+    </div>
+    
+    <div class="sector-card">
+      <div class="sector-header">
+        <div class="sector-title">
+          ━ <b>SaaS・ソフトウェア</b> <span class="vbadge vbadge-confirmed" title="実測r=+0.46">✓ 検証済</span>
         </div>
         <div class="sector-avg dir-neutral">
-          -0.45%
+          +0.42%
         </div>
       </div>
       <div class="sector-bar-container">
@@ -398,55 +497,40 @@
       <div class="sector-note">「アメリカ下げ戦犯・ソフトウェアSaaS系」として頻出。下げ時の連動が特に強い</div>
     </div>
     
+      </div>
+      
+        <details class="contradicted-details">
+          <summary>連動性の低いセクター (2件) を表示</summary>
+          <div class="sector-grid" style="margin-top: 12px;">
+            
     <div class="sector-card">
       <div class="sector-header">
         <div class="sector-title">
-          ━ <b>建機</b> <span class="corr" title="強連動">🔗🔗🔗</span>
+          ▲ <b>通信（配当ディフェンシブ）</b> <span class="vbadge vbadge-contradicted" title="実測r=+0.09">✗ 連動低</span>
         </div>
-        <div class="sector-avg dir-neutral">
-          +0.33%
+        <div class="sector-avg dir-bullish">
+          +1.42%
         </div>
       </div>
       <div class="sector-bar-container">
         <div class="sector-bar-center"></div>
-        <div class="sector-bar bar-neutral" style="width: 0%; left: 50%;"></div>
+        <div class="sector-bar bar-bullish" style="width: 47.22636588366086%; left: 50%;"></div>
       </div>
       <div class="sector-detail">
-        <div class="sector-us-label">米: キャタピラー・ディアー</div>
-        <div class="sector-jp-stocks">日: コマツ、日立建機、クボタ</div>
-        <div class="sector-action">→ <b class="dir-neutral">様子見目線</b></div>
+        <div class="sector-us-label">米: ベライゾン・AT&T</div>
+        <div class="sector-jp-stocks">日: KDDI、NTT、ソフトバンク</div>
+        <div class="sector-action">→ <b class="dir-bullish">やや買い目線</b></div>
       </div>
-      <div class="sector-note">CAT・DEの動きから翌朝のコマツ方向が読みやすい</div>
+      <div class="sector-note">ディフェンシブ資金フロー時に連動。日本特有の材料（粉飾等）には非連動</div>
     </div>
     
     <div class="sector-card">
       <div class="sector-header">
         <div class="sector-title">
-          ━ <b>電線（CAT連動系）</b> <span class="corr" title="中連動">🔗🔗</span>
+          ━ <b>軍需・防衛</b> <span class="vbadge vbadge-contradicted" title="実測r=+0.17">✗ 連動低</span>
         </div>
         <div class="sector-avg dir-neutral">
-          +0.33%
-        </div>
-      </div>
-      <div class="sector-bar-container">
-        <div class="sector-bar-center"></div>
-        <div class="sector-bar bar-neutral" style="width: 0%; left: 50%;"></div>
-      </div>
-      <div class="sector-detail">
-        <div class="sector-us-label">米: キャタピラー・ディアー</div>
-        <div class="sector-jp-stocks">日: フジクラ、住友電工、古河電工</div>
-        <div class="sector-action">→ <b class="dir-neutral">様子見目線</b></div>
-      </div>
-      <div class="sector-note">インフラ投資テーマでCAT・DEと一緒に動く傾向。PDFでは「電線3種」としてコマツとセットで語られる</div>
-    </div>
-    
-    <div class="sector-card">
-      <div class="sector-header">
-        <div class="sector-title">
-          ━ <b>軍需・防衛</b> <span class="corr" title="強連動">🔗🔗🔗</span>
-        </div>
-        <div class="sector-avg dir-neutral">
-          -0.30%
+          -0.44%
         </div>
       </div>
       <div class="sector-bar-container">
@@ -461,104 +545,20 @@
       <div class="sector-note">地政学リスク連動。戦争懸念時の強い順張りセクター</div>
     </div>
     
-    <div class="sector-card">
-      <div class="sector-header">
-        <div class="sector-title">
-          ━ <b>エネルギー（原油）</b> <span class="corr" title="強連動">🔗🔗🔗</span>
-        </div>
-        <div class="sector-avg dir-neutral">
-          -0.26%
-        </div>
+          </div>
+          <div style="font-size: 12px; color: var(--muted); margin-top: 10px;">
+            これらは過去のバックテストで連動が確認できなかったセクター。実運用上、判断材料としての信頼度は低い。
+          </div>
+        </details>
+        
+      <div class="rationale" style="margin-top: 16px;">
+        ✓検証済 = バックテストで連動が確認されたセクター。
+        判定: ±1.5%以上=強シグナル / ±0.5〜1.5%=弱シグナル / それ未満=様子見。
       </div>
-      <div class="sector-bar-container">
-        <div class="sector-bar-center"></div>
-        <div class="sector-bar bar-neutral" style="width: 0%; left: 50%;"></div>
-      </div>
-      <div class="sector-detail">
-        <div class="sector-us-label">米: エクソン・シェブロン等</div>
-        <div class="sector-jp-stocks">日: INPEX、ENEOS、出光興産、コスモエネルギー</div>
-        <div class="sector-action">→ <b class="dir-neutral">様子見目線</b></div>
-      </div>
-      <div class="sector-note">原油先物・XOM・CVXが上げればINPEX等は高確率で連動</div>
-    </div>
+    </section>
     
-    </div>
-    <div class="rationale" style="margin-top: 16px;">
-      連動強度: 🔗🔗🔗 = 強 / 🔗🔗 = 中 / 🔗 = 弱。
-      しきい値: ±1.5%以上=強シグナル / ±0.5〜1.5%=弱シグナル / それ未満=様子見。
-    </div>
-  </section>
 
-  <!-- キリバン水準 -->
-  <section>
-    <h2 class="section-title">📐 キリバン水準（参考）</h2>
-    <div class="grid">
-      <div class="card">
-        <h2>キリバン値幅（前日終値 ± N円）</h2>
-        <table>
-          <tbody>
-            
-        <tr class="band-upper">
-          <td>前日比 +1500</td>
-          <td class="price">¥61,693</td>
-        </tr>
-        <tr class="band-upper">
-          <td>前日比 +1000</td>
-          <td class="price">¥61,193</td>
-        </tr>
-        <tr class="band-upper">
-          <td>前日比 +500</td>
-          <td class="price">¥60,693</td>
-        </tr>
-        <tr class="band-lower">
-          <td>前日比 -500</td>
-          <td class="price">¥59,693</td>
-        </tr>
-        <tr class="band-lower">
-          <td>前日比 -1000</td>
-          <td class="price">¥59,193</td>
-        </tr>
-        <tr class="band-lower">
-          <td>前日比 -1500</td>
-          <td class="price">¥58,693</td>
-        </tr>
-            <tr class="prev-close-row">
-              <td>前日終値</td>
-              <td class="price">¥60,193</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="rationale" style="margin-top: 16px;">
-          通常ボラ時は効きにくい。参考値として。
-          ±500/1000/1500円が天底・レジサポとして意識される水準。
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>株価キリバン節目（1,000円単位）</h2>
-        <table>
-          <tbody>
-            <tr class="band-upper">
-              <td>レジスタンス</td>
-              <td class="price">¥61,000</td>
-            </tr>
-            <tr class="prev-close-row">
-              <td>現在値</td>
-              <td class="price">¥60,193</td>
-            </tr>
-            <tr class="band-lower">
-              <td>サポート</td>
-              <td class="price">¥60,000</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="rationale" style="margin-top: 16px;">
-          丸い数字は常にレジサポ候補。「買い」の日は下降トレンドから節目タッチで買い、
-          「売り」の日は上昇トレンドから節目タッチで売り。
-        </div>
-      </div>
-    </div>
-  </section>
+  
 
   <div class="footer-note">
     <b>⚠️ ディスクレーマー</b>:

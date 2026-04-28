@@ -1,0 +1,13 @@
+[
+  {
+    "date": "2026-04-29",
+    "verdict": "sell_bias",
+    "verdict_label": "売りポジ主体",
+    "confidence": "high",
+    "futures_diff": -1477.359375,
+    "nasdaq_pct": -1.3462123284096683,
+    "dow_pct": 0.11485701782973923,
+    "sox_pct": -4.622084057800491,
+    "warnings": []
+  }
+]
