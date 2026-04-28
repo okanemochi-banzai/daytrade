@@ -47,6 +47,6 @@ jobs:
           git add docs/backtest_report.html docs/backtest_report.json
           if ! git diff --quiet --cached; then
             git commit -m "chore: update backtest report"
-            git pull --rebase origin main
+            git pull --rebase -X ours origin main || git rebase --abort
             git push
           fi
