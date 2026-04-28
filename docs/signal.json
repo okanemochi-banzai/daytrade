@@ -249,7 +249,7 @@
       "us_label": "ベライゾン・AT&T",
       "us_avg_change_pct": 1.4992059236408117,
       "direction": "bullish",
-      "signal_strength": "weak",
+      "signal_strength": "strong",
       "jp_stocks": [
         "KDDI",
         "NTT",
@@ -311,7 +311,7 @@
       ],
       "correlation_strength": "high",
       "note": "地政学リスク連動。戦争懸念時の強い順張りセクター",
-      "rationale": "米ロッキード・RTX等が平均-0.44%。方向感なし、様子見。",
+      "rationale": "米ロッキード・RTX等が平均-0.46%。方向感なし、様子見。",
       "validation_verdict": "contradicted",
       "validation_pearson_r": 0.17186179449397185,
       "validation_label": "✗ 強連動が確認できず"
