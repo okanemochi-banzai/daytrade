@@ -265,7 +265,12 @@ def get_all_warnings(
     nikkei_week_is_positive: bool | None = None,
     nikkei_month_is_positive: bool | None = None,
 ) -> list[TradingWarning]:
-    """今日該当する警告を全て返す（severity=high を先頭に）"""
+    """今日該当する警告を全て返す（severity=high を先頭に）。
+
+    冗長性の解消ルール:
+      - 金曜のpre_holiday警告は friday_closing と内容が被るので除外
+      - 月末のpre_holiday警告は month_end と被るので除外
+    """
     candidates = [
         check_friday_warning(today, nikkei_week_is_positive),
         check_month_end_warning(today, nikkei_month_is_positive),
@@ -273,6 +278,13 @@ def get_all_warnings(
         check_month_start_warning(today),
     ]
     warnings = [w for w in candidates if w is not None]
+
+    # 冗長性チェック: 金曜手仕舞いまたは月末手仕舞いがあるなら、pre_holidayは抑制
+    has_friday_or_month_end = any(
+        w.type in ("friday_closing", "month_end") for w in warnings
+    )
+    if has_friday_or_month_end:
+        warnings = [w for w in warnings if w.type != "pre_holiday"]
 
     severity_order = {"high": 0, "medium": 1, "low": 2}
     warnings.sort(key=lambda w: severity_order.get(w.severity, 9))

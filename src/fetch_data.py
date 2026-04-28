@@ -107,43 +107,41 @@ def _safe_change_pct(ticker: str) -> float:
 
 
 def _week_and_month_direction() -> tuple[bool | None, bool | None]:
-    """今週と今月の日経が陽線かを判定する。
+    """直近のトレンド方向を判定する（ローリング期間ベース）。
+
+    実装の意図:
+      従来は「今週月曜の始値 vs 現在の終値」で判定していたが、
+      祝日で月曜が休場の場合に判定がズレる問題があった。
+      代わりに「直近5営業日の始値 vs 直近終値」を週足、
+      「直近20営業日の始値 vs 直近終値」を月足とする。
 
     Returns:
-        (週足陽線か, 月足陽線か) または (None, None) if データ取得失敗
+        (週足陽線か, 月足陽線か) または (None, None) on failure
     """
     try:
         data = yf.Ticker(TICKER_NIKKEI_SPOT).history(period="3mo", interval="1d")
         if data.empty:
             return None, None
-        # タイムゾーン除去
-        data.index = data.index.tz_localize(None) if data.index.tz is not None else data.index
+        if data.index.tz is not None:
+            data.index = data.index.tz_localize(None)
 
-        from datetime import datetime
-        now = datetime.now(JST).replace(tzinfo=None)
+        if len(data) < 5:
+            return None, None
 
-        # 今週の月曜日の日付を計算
-        days_since_monday = now.weekday()
-        week_start = now - __import__("datetime").timedelta(days=days_since_monday)
-        week_start_ts = week_start.replace(hour=0, minute=0, second=0, microsecond=0)
+        # 直近5営業日でローリング週足判定
+        recent_5 = data.tail(5)
+        week_open = float(recent_5["Open"].iloc[0])
+        week_close = float(recent_5["Close"].iloc[-1])
+        week_positive = week_close > week_open
 
-        week_data = data[data.index >= week_start_ts]
-        if len(week_data) < 1:
-            week_positive = None
-        else:
-            week_open = float(week_data["Open"].iloc[0])
-            week_close = float(week_data["Close"].iloc[-1])
-            week_positive = week_close > week_open
-
-        # 今月
-        month_start_ts = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        month_data = data[data.index >= month_start_ts]
-        if len(month_data) < 1:
-            month_positive = None
-        else:
-            month_open = float(month_data["Open"].iloc[0])
-            month_close = float(month_data["Close"].iloc[-1])
+        # 直近20営業日（≒1ヶ月分）でローリング月足判定
+        if len(data) >= 20:
+            recent_20 = data.tail(20)
+            month_open = float(recent_20["Open"].iloc[0])
+            month_close = float(recent_20["Close"].iloc[-1])
             month_positive = month_close > month_open
+        else:
+            month_positive = None
 
         return week_positive, month_positive
     except Exception as e:
