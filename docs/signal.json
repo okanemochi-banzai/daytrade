@@ -1,6 +1,6 @@
 {
   "market": {
-    "timestamp": "2026-04-29T00:48:58.866495+09:00",
+    "timestamp": "2026-04-29T08:15:42.289522+09:00",
     "nikkei": {
       "prev_close": 60537.359375,
       "change_pct": 1.3751376792643155,
@@ -8,58 +8,58 @@
       "month_is_positive": true
     },
     "nikkei_futures": {
-      "price": 59045.0
+      "price": 59110.0
     },
     "etf_1570": {
       "prev_close": 59440.0
     },
     "us_markets": {
-      "nasdaq_change_pct": -1.4267871430314827,
-      "dow_change_pct": 0.12844251277950303,
-      "sox_change_pct": -4.756651750876562
+      "nasdaq_change_pct": -0.8972551432465115,
+      "dow_change_pct": -0.05259413834355353,
+      "sox_change_pct": -3.578598013310963
     },
     "fx_commodities": {
-      "usdjpy_price": 159.5800018310547,
-      "usdjpy_change_pct": -0.0012526327998751974,
-      "gold_price": 4590.89990234375,
-      "gold_change_pct": -1.807332030734754,
-      "oil_price": 99.45999908447266,
-      "oil_change_pct": 3.206388139280425
+      "usdjpy_price": 159.5679931640625,
+      "usdjpy_change_pct": 0.1324061963188905,
+      "gold_price": 4606.60009765625,
+      "gold_change_pct": -1.4715277008285677,
+      "oil_price": 99.58999633789062,
+      "oil_change_pct": 3.3412820374987495
     },
     "us_sector_changes": {
-      "ADBE": 1.6505774888385227,
-      "AMAT": -6.050238601850744,
-      "AMD": -4.957713323914403,
-      "BA": -1.5216375933077897,
-      "CAT": -1.6451633214631944,
-      "CL": 2.3880268266087024,
-      "COP": 2.005261698953542,
-      "CRM": 1.0517284656964332,
-      "CVX": 2.4894502294103393,
-      "DE": -0.3065035894400103,
-      "FDX": -0.4356911437738309,
-      "HON": -0.04008805123498771,
-      "INTU": 2.050059251466263,
-      "KLAC": -3.9621068050986863,
-      "KO": 6.037911131715057,
-      "LMT": -0.6116653901220848,
-      "LRCX": -5.461131576783873,
-      "MCD": 1.4024352861912837,
-      "MSFT": 0.4189791431372214,
-      "NOC": -0.2885610650723347,
-      "NOW": 0.6965228347912467,
-      "NVDA": -3.4916217547600326,
-      "ORCL": -4.087654399733498,
-      "PG": 1.785720528480561,
-      "RTX": -0.09228495651359969,
-      "SNDK": -7.369376661186311,
-      "STX": -4.452382927856091,
-      "T": 3.017243118933499,
-      "TMUS": 1.5813950148555023,
-      "UPS": -4.300627190657968,
+      "ADBE": 1.625506426531964,
+      "AMAT": -5.866225574102257,
+      "AMD": -3.4127284646018663,
+      "BA": -0.2636928221688484,
+      "CAT": -1.3175814379594253,
+      "CL": 1.7821076780698109,
+      "COP": 2.1696247395030177,
+      "CRM": 0.6327087883108318,
+      "CVX": 1.9374401205244585,
+      "DE": -0.6746669966658514,
+      "FDX": 0.598101708996901,
+      "HON": 0.4149915639513724,
+      "INTU": 2.6825992754579975,
+      "KLAC": -4.791054173519738,
+      "KO": 3.8573647117456256,
+      "LMT": -0.20648633661350946,
+      "LRCX": -3.1757064224758658,
+      "MCD": 0.7511881939105569,
+      "MSFT": 1.042792853303709,
+      "NOC": 0.4415202854248568,
+      "NOW": 0.04422434148918519,
+      "NVDA": -1.588108781548958,
+      "ORCL": -4.047178381289207,
+      "PG": 0.5188708248856422,
+      "RTX": 1.3265588465770861,
+      "SNDK": -6.3399344684739845,
+      "STX": -2.8244816682492457,
+      "T": 2.1159835364126467,
+      "TMUS": 2.17236728903043,
+      "UPS": -3.9726492121472834,
       "VZ": 0.29724672798583374,
-      "WDC": -4.469344239535989,
-      "XOM": 2.5237803986498886
+      "WDC": -2.4305693321994393,
+      "XOM": 1.599294876943258
     }
   },
   "warnings": [],
@@ -68,24 +68,24 @@
       {
         "name": "ドル円",
         "symbol": "USD/JPY",
-        "current": 159.5800018310547,
-        "change_pct": -0.0012526327998751974,
+        "current": 159.5679931640625,
+        "change_pct": 0.1324061963188905,
         "direction": "flat",
         "interpretation": "変動なし"
       },
       {
         "name": "ゴールド",
         "symbol": "XAU/USD",
-        "current": 4590.89990234375,
-        "change_pct": -1.807332030734754,
+        "current": 4606.60009765625,
+        "change_pct": -1.4715277008285677,
         "direction": "down",
         "interpretation": "ゴールド下落 → リスクオン転換の可能性"
       },
       {
         "name": "WTI原油",
         "symbol": "CL",
-        "current": 99.45999908447266,
-        "change_pct": 3.206388139280425,
+        "current": 99.58999633789062,
+        "change_pct": 3.3412820374987495,
         "direction": "up",
         "interpretation": "原油急騰 → リスクオフ懸念。エネルギー株（INPEX・ENEOS等）に追い風、他はリスクオフ警戒"
       }
@@ -99,26 +99,26 @@
     "us_indices": [
       {
         "name": "ナスダック",
-        "change_pct": -1.4267871430314827,
+        "change_pct": -0.8972551432465115,
         "direction": "bearish"
       },
       {
         "name": "ダウ",
-        "change_pct": 0.12844251277950303,
+        "change_pct": -0.05259413834355353,
         "direction": "neutral"
       },
       {
         "name": "SOX",
-        "change_pct": -4.756651750876562,
+        "change_pct": -3.578598013310963,
         "direction": "bearish"
       }
     ],
     "us_consensus_direction": "bearish",
-    "futures_diff": -1492.359375,
+    "futures_diff": -1427.359375,
     "futures_aligned": true,
     "reasons": [
       "米指数が揃って下げ（ナスダック, SOX）",
-      "日経先物が米に追随（現対-1492円）",
+      "日経先物が米に追随（現対-1427円）",
       "→ 米日連動の下落相場として売り目線"
     ]
   },
@@ -135,13 +135,13 @@
       }
     },
     "sayatori_signal": {
-      "futures_price": 59045.0,
+      "futures_price": 59110.0,
       "spot_price": 60537.359375,
-      "diff": -1492.359375,
-      "abs_diff": 1492.359375,
+      "diff": -1427.359375,
+      "abs_diff": 1427.359375,
       "direction": "long",
       "threshold": 1000,
-      "rationale": "現対-1,492円。先物が現物より1,492円安い。鞘が閉じる方向（先物買い）を朝一で狙う。"
+      "rationale": "現対-1,427円。先物が現物より1,427円安い。鞘が閉じる方向（先物買い）を朝一で狙う。"
     },
     "round_number_levels": {
       "current_price": 60537.359375,
@@ -156,7 +156,7 @@
     {
       "sector_name": "ストレージ半導体",
       "us_label": "サンディスク等ストレージ",
-      "us_avg_change_pct": -5.430367942859465,
+      "us_avg_change_pct": -3.864995156307556,
       "direction": "bearish",
       "signal_strength": "strong",
       "jp_stocks": [
@@ -164,7 +164,7 @@
       ],
       "correlation_strength": "high",
       "note": "キオクシアはサンディスクの動きに強く連動。半導体カルテットとは別扱いが鉄則",
-      "rationale": "米サンディスク等ストレージが平均-5.43%。キオクシア等は売り目線で想定。",
+      "rationale": "米サンディスク等ストレージが平均-3.86%。キオクシア等は売り目線で想定。",
       "validation_verdict": "confirmed",
       "validation_pearson_r": 0.531622716147063,
       "validation_label": "✅ 強連動を確認"
@@ -172,7 +172,7 @@
     {
       "sector_name": "半導体",
       "us_label": "SOX指数（半導体）",
-      "us_avg_change_pct": -4.784562412481548,
+      "us_avg_change_pct": -3.766764683249737,
       "direction": "bearish",
       "signal_strength": "strong",
       "jp_stocks": [
@@ -183,52 +183,15 @@
       ],
       "correlation_strength": "high",
       "note": "SOX指数との連動が最も強いグループ（半導体カルテット）",
-      "rationale": "米SOX指数（半導体）が平均-4.78%。東京エレクトロン・アドバンテスト・ディスコ等は売り目線で想定。",
+      "rationale": "米SOX指数（半導体）が平均-3.77%。東京エレクトロン・アドバンテスト・ディスコ等は売り目線で想定。",
       "validation_verdict": "confirmed",
       "validation_pearson_r": 0.5824034256850937,
       "validation_label": "✅ 強連動を確認"
     },
     {
-      "sector_name": "生活防衛（配当王）",
-      "us_label": "コカコーラ・P&G等",
-      "us_avg_change_pct": 2.9035234432489014,
-      "direction": "bullish",
-      "signal_strength": "strong",
-      "jp_stocks": [
-        "花王",
-        "味の素",
-        "明治HD",
-        "キッコーマン"
-      ],
-      "correlation_strength": "low",
-      "note": "連動は弱い。配当ディフェンシブ資金フロー時のみ同方向",
-      "rationale": "米コカコーラ・P&G等が平均+2.90%。花王・味の素・明治HD等は買い目線で想定。",
-      "validation_verdict": "confirmed",
-      "validation_pearson_r": 0.35780991819844515,
-      "validation_label": "✅ 想定より強い連動"
-    },
-    {
-      "sector_name": "海運・物流",
-      "us_label": "UPS・FedEx",
-      "us_avg_change_pct": -2.3681591672158993,
-      "direction": "bearish",
-      "signal_strength": "strong",
-      "jp_stocks": [
-        "日本郵船",
-        "商船三井",
-        "川崎汽船"
-      ],
-      "correlation_strength": "low",
-      "note": "連動は弱め。海運は日本独自の材料（海峡・BDI）の影響が大きい",
-      "rationale": "米UPS・FedExが平均-2.37%。日本郵船・商船三井・川崎汽船等は売り目線で想定。",
-      "validation_verdict": "weak",
-      "validation_pearson_r": 0.14173291946884722,
-      "validation_label": "△ 弱連動（想定通り）"
-    },
-    {
       "sector_name": "エネルギー（原油）",
       "us_label": "エクソン・シェブロン等",
-      "us_avg_change_pct": 2.3394974423379233,
+      "us_avg_change_pct": 1.9021199123235781,
       "direction": "bullish",
       "signal_strength": "strong",
       "jp_stocks": [
@@ -239,15 +202,52 @@
       ],
       "correlation_strength": "high",
       "note": "原油先物・XOM・CVXが上げればINPEX等は高確率で連動",
-      "rationale": "米エクソン・シェブロン等が平均+2.34%。INPEX・ENEOS・出光興産等は買い目線で想定。",
+      "rationale": "米エクソン・シェブロン等が平均+1.90%。INPEX・ENEOS・出光興産等は買い目線で想定。",
       "validation_verdict": "weak",
       "validation_pearson_r": 0.2512212422635341,
       "validation_label": "△ 期待より弱い連動"
     },
     {
+      "sector_name": "生活防衛（配当王）",
+      "us_label": "コカコーラ・P&G等",
+      "us_avg_change_pct": 1.7273828521529089,
+      "direction": "bullish",
+      "signal_strength": "strong",
+      "jp_stocks": [
+        "花王",
+        "味の素",
+        "明治HD",
+        "キッコーマン"
+      ],
+      "correlation_strength": "low",
+      "note": "連動は弱い。配当ディフェンシブ資金フロー時のみ同方向",
+      "rationale": "米コカコーラ・P&G等が平均+1.73%。花王・味の素・明治HD等は買い目線で想定。",
+      "validation_verdict": "confirmed",
+      "validation_pearson_r": 0.35780991819844515,
+      "validation_label": "✅ 想定より強い連動"
+    },
+    {
+      "sector_name": "海運・物流",
+      "us_label": "UPS・FedEx",
+      "us_avg_change_pct": -1.6872737515751912,
+      "direction": "bearish",
+      "signal_strength": "strong",
+      "jp_stocks": [
+        "日本郵船",
+        "商船三井",
+        "川崎汽船"
+      ],
+      "correlation_strength": "low",
+      "note": "連動は弱め。海運は日本独自の材料（海峡・BDI）の影響が大きい",
+      "rationale": "米UPS・FedExが平均-1.69%。日本郵船・商船三井・川崎汽船等は売り目線で想定。",
+      "validation_verdict": "weak",
+      "validation_pearson_r": 0.14173291946884722,
+      "validation_label": "△ 弱連動（想定通り）"
+    },
+    {
       "sector_name": "通信（配当ディフェンシブ）",
       "us_label": "ベライゾン・AT&T",
-      "us_avg_change_pct": 1.6319616205916117,
+      "us_avg_change_pct": 1.528532517809637,
       "direction": "bullish",
       "signal_strength": "strong",
       "jp_stocks": [
@@ -257,7 +257,7 @@
       ],
       "correlation_strength": "medium",
       "note": "ディフェンシブ資金フロー時に連動。日本特有の材料（粉飾等）には非連動",
-      "rationale": "米ベライゾン・AT&Tが平均+1.63%。KDDI・NTT・ソフトバンク等は買い目線で想定。",
+      "rationale": "米ベライゾン・AT&Tが平均+1.53%。KDDI・NTT・ソフトバンク等は買い目線で想定。",
       "validation_verdict": "contradicted",
       "validation_pearson_r": 0.09158658250944549,
       "validation_label": "✗ 連動性なし"
@@ -265,7 +265,7 @@
     {
       "sector_name": "建機",
       "us_label": "キャタピラー・ディアー",
-      "us_avg_change_pct": -0.9758334554516024,
+      "us_avg_change_pct": -0.9961242173126383,
       "direction": "bearish",
       "signal_strength": "weak",
       "jp_stocks": [
@@ -275,7 +275,7 @@
       ],
       "correlation_strength": "high",
       "note": "CAT・DEの動きから翌朝のコマツ方向が読みやすい",
-      "rationale": "米キャタピラー・ディアーが平均-0.98%。コマツ・日立建機・クボタ等はやや売り寄りで想定。",
+      "rationale": "米キャタピラー・ディアーが平均-1.00%。コマツ・日立建機・クボタ等はやや売り寄りで想定。",
       "validation_verdict": "confirmed",
       "validation_pearson_r": 0.407238632072992,
       "validation_label": "✅ 強連動を確認"
@@ -283,7 +283,7 @@
     {
       "sector_name": "電線（CAT連動系）",
       "us_label": "キャタピラー・ディアー",
-      "us_avg_change_pct": -0.9758334554516024,
+      "us_avg_change_pct": -0.9961242173126383,
       "direction": "bearish",
       "signal_strength": "weak",
       "jp_stocks": [
@@ -293,7 +293,7 @@
       ],
       "correlation_strength": "medium",
       "note": "インフラ投資テーマでCAT・DEと一緒に動く傾向。PDFでは「電線3種」としてコマツとセットで語られる",
-      "rationale": "米キャタピラー・ディアーが平均-0.98%。フジクラ・住友電工・古河電工等はやや売り寄りで想定。",
+      "rationale": "米キャタピラー・ディアーが平均-1.00%。フジクラ・住友電工・古河電工等はやや売り寄りで想定。",
       "validation_verdict": "confirmed",
       "validation_pearson_r": 0.36274598316562384,
       "validation_label": "✅ 中程度の連動を確認"
@@ -301,9 +301,9 @@
     {
       "sector_name": "軍需・防衛",
       "us_label": "ロッキード・RTX等",
-      "us_avg_change_pct": -0.5108474112501593,
-      "direction": "bearish",
-      "signal_strength": "weak",
+      "us_avg_change_pct": 0.3425783074341915,
+      "direction": "neutral",
+      "signal_strength": "neutral",
       "jp_stocks": [
         "三菱重工業",
         "IHI",
@@ -311,7 +311,7 @@
       ],
       "correlation_strength": "high",
       "note": "地政学リスク連動。戦争懸念時の強い順張りセクター",
-      "rationale": "米ロッキード・RTX等が平均-0.51%。三菱重工業・IHI・川崎重工業等はやや売り寄りで想定。",
+      "rationale": "米ロッキード・RTX等が平均+0.34%。方向感なし、様子見。",
       "validation_verdict": "contradicted",
       "validation_pearson_r": 0.17186179449397185,
       "validation_label": "✗ 強連動が確認できず"
@@ -319,7 +319,7 @@
     {
       "sector_name": "SaaS・ソフトウェア",
       "us_label": "セールスフォース・MSFT等",
-      "us_avg_change_pct": 0.29670213069936474,
+      "us_avg_change_pct": 0.3301088839674134,
       "direction": "neutral",
       "signal_strength": "neutral",
       "jp_stocks": [
@@ -331,7 +331,7 @@
       ],
       "correlation_strength": "medium",
       "note": "「アメリカ下げ戦犯・ソフトウェアSaaS系」として頻出。下げ時の連動が特に強い",
-      "rationale": "米セールスフォース・MSFT等が平均+0.30%。方向感なし、様子見。",
+      "rationale": "米セールスフォース・MSFT等が平均+0.33%。方向感なし、様子見。",
       "validation_verdict": "confirmed",
       "validation_pearson_r": 0.45669343723677464,
       "validation_label": "✅ 中程度の連動を確認"
@@ -343,10 +343,10 @@
       "verdict": "sell_bias",
       "verdict_label": "売りポジ主体",
       "confidence": "high",
-      "futures_diff": -1492.359375,
-      "nasdaq_pct": -1.4267871430314827,
-      "dow_pct": 0.12844251277950303,
-      "sox_pct": -4.756651750876562,
+      "futures_diff": -1427.359375,
+      "nasdaq_pct": -0.8972551432465115,
+      "dow_pct": -0.05259413834355353,
+      "sox_pct": -3.578598013310963,
       "warnings": []
     }
   ],
