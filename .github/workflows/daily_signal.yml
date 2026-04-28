@@ -51,7 +51,8 @@ jobs:
           git add docs/
           if ! git diff --quiet --cached; then
             git commit -m "chore: update signal dashboard"
-            git pull --rebase origin main
+            # コンフリクト時はローカル(今生成したファイル)を優先する
+            git pull --rebase -X ours origin main || git rebase --abort
             git push
           fi
 
