@@ -58,5 +58,16 @@
     "dow_pct": -1.1260188261932202,
     "sox_pct": -0.5727200969470991,
     "warnings": []
+  },
+  {
+    "date": "2026-05-06",
+    "verdict": "buy_bias",
+    "verdict_label": "買いポジ主体",
+    "confidence": "high",
+    "futures_diff": 1716.87890625,
+    "nasdaq_pct": 1.0305021210445409,
+    "dow_pct": 0.7281114420910173,
+    "sox_pct": 4.232865248011297,
+    "warnings": []
   }
 ]
