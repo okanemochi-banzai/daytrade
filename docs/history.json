@@ -80,5 +80,18 @@
     "dow_pct": 1.2421127398031473,
     "sox_pct": 4.482229546943395,
     "warnings": []
+  },
+  {
+    "date": "2026-05-08",
+    "verdict": "hands_off",
+    "verdict_label": "初心者手出し無用",
+    "confidence": "low",
+    "futures_diff": 2761.87890625,
+    "nasdaq_pct": -0.12672401158105862,
+    "dow_pct": -0.628365833246658,
+    "sox_pct": -2.71736798882134,
+    "warnings": [
+      "📅 金曜 × 週足陽線 = 手仕舞い売り警戒"
+    ]
   }
 ]
