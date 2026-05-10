@@ -93,5 +93,16 @@
     "warnings": [
       "📅 金曜 × 週足陽線 = 手仕舞い売り警戒"
     ]
+  },
+  {
+    "date": "2026-05-11",
+    "verdict": "buy_bias",
+    "verdict_label": "買いポジ主体",
+    "confidence": "high",
+    "futures_diff": 816.3515625,
+    "nasdaq_pct": 1.70843003899106,
+    "dow_pct": 0.024580950322694584,
+    "sox_pct": 5.5058713673304505,
+    "warnings": []
   }
 ]
