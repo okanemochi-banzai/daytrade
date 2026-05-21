@@ -194,5 +194,18 @@
     "dow_pct": 1.3075809084530432,
     "sox_pct": 4.491496464663225,
     "warnings": []
+  },
+  {
+    "date": "2026-05-22",
+    "verdict": "buy_bias",
+    "verdict_label": "買いポジ主体",
+    "confidence": "medium",
+    "futures_diff": 2395.58984375,
+    "nasdaq_pct": 0.08655489224727031,
+    "dow_pct": 0.5525138501439653,
+    "sox_pct": 1.2764853937927034,
+    "warnings": [
+      "📅 金曜 × 週足陰線 = ショートカバー買い警戒"
+    ]
   }
 ]
