@@ -1,6 +1,6 @@
 {
   "market": {
-    "timestamp": "2026-05-25T08:31:19.037879+09:00",
+    "timestamp": "2026-05-26T08:36:13.612484+09:00",
     "nikkei": {
       "prev_close": 63339.0703125,
       "change_pct": 2.682909530280897,
@@ -8,10 +8,10 @@
       "month_is_positive": true
     },
     "nikkei_futures": {
-      "price": 63335.0
+      "price": 65300.0
     },
     "etf_1570": {
-      "prev_close": 65880.0
+      "prev_close": 70010.0
     },
     "us_markets": {
       "nasdaq_change_pct": 0.1934769749697418,
@@ -19,12 +19,12 @@
       "sox_change_pct": 1.993132437933931
     },
     "fx_commodities": {
-      "usdjpy_price": 158.86900329589844,
-      "usdjpy_change_pct": -0.09370138610882428,
-      "gold_price": 4523.2001953125,
-      "gold_change_pct": 0.04866612060385744,
-      "oil_price": 96.5999984741211,
-      "oil_change_pct": 0.0
+      "usdjpy_price": 158.9429931640625,
+      "usdjpy_change_pct": -0.0018911966714885153,
+      "gold_price": 4575.2998046875,
+      "gold_change_pct": 1.2010573918933787,
+      "oil_price": 90.88999938964844,
+      "oil_change_pct": -5.910972230504075
     },
     "us_sector_changes": {
       "ADBE": 0.2703762338459148,
@@ -68,34 +68,34 @@
       {
         "name": "ドル円",
         "symbol": "USD/JPY",
-        "current": 158.86900329589844,
-        "change_pct": -0.09370138610882428,
+        "current": 158.9429931640625,
+        "change_pct": -0.0018911966714885153,
         "direction": "flat",
         "interpretation": "変動なし"
       },
       {
         "name": "ゴールド",
         "symbol": "XAU/USD",
-        "current": 4523.2001953125,
-        "change_pct": 0.04866612060385744,
-        "direction": "flat",
-        "interpretation": "変動なし"
+        "current": 4575.2998046875,
+        "change_pct": 1.2010573918933787,
+        "direction": "up",
+        "interpretation": "ゴールド上昇 → インフレ懸念 or リスクオフ。住友金属鉱山等の金鉱株に追い風"
       },
       {
         "name": "WTI原油",
         "symbol": "CL",
-        "current": 96.5999984741211,
-        "change_pct": 0.0,
-        "direction": "flat",
-        "interpretation": "変動なし"
+        "current": 90.88999938964844,
+        "change_pct": -5.910972230504075,
+        "direction": "down",
+        "interpretation": "原油急落 → リスクオン転換の可能性、エネルギー株は逆風"
       }
     ],
     "combined_note": null
   },
   "direction": {
-    "verdict": "hands_off",
-    "verdict_label": "初心者手出し無用",
-    "confidence": "low",
+    "verdict": "buy_bias",
+    "verdict_label": "買いポジ主体",
+    "confidence": "medium",
     "us_indices": [
       {
         "name": "ナスダック",
@@ -114,12 +114,12 @@
       }
     ],
     "us_consensus_direction": "bullish",
-    "futures_diff": -4.0703125,
-    "futures_aligned": false,
+    "futures_diff": 1960.9296875,
+    "futures_aligned": true,
     "reasons": [
       "米指数が揃って上げ（ダウ, SOX）",
-      "先物の方向性が不明確（現対-4円）",
-      "→ 米日非連動のため、方向性読みづらく様子見"
+      "日経先物が米に追随（現対+1961円）",
+      "→ 米日連動の上昇相場として買い目線"
     ]
   },
   "kiriban": {
@@ -135,13 +135,13 @@
       }
     },
     "sayatori_signal": {
-      "futures_price": 63335.0,
+      "futures_price": 65300.0,
       "spot_price": 63339.0703125,
-      "diff": -4.0703125,
-      "abs_diff": 4.0703125,
-      "direction": "neutral",
+      "diff": 1960.9296875,
+      "abs_diff": 1960.9296875,
+      "direction": "short",
       "threshold": 1000,
-      "rationale": "現対-4円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
+      "rationale": "現対+1,961円。先物が現物より1,961円高い。鞘が閉じる方向（先物売り）を朝一で狙う。"
     },
     "round_number_levels": {
       "current_price": 63339.0703125,
@@ -149,8 +149,8 @@
       "support": 63000.0,
       "step": 1000
     },
-    "high_volatility": false,
-    "kiriban_effective": false
+    "high_volatility": true,
+    "kiriban_effective": true
   },
   "sectors": [
     {
@@ -339,6 +339,17 @@
   ],
   "recent_history": [
     {
+      "date": "2026-05-26",
+      "verdict": "buy_bias",
+      "verdict_label": "買いポジ主体",
+      "confidence": "medium",
+      "futures_diff": 1960.9296875,
+      "nasdaq_pct": 0.1934769749697418,
+      "dow_pct": 0.58473740145073,
+      "sox_pct": 1.993132437933931,
+      "warnings": []
+    },
+    {
       "date": "2026-05-25",
       "verdict": "hands_off",
       "verdict_label": "初心者手出し無用",
@@ -383,36 +394,11 @@
       "dow_pct": -0.6485557342904236,
       "sox_pct": 0.026326748910032727,
       "warnings": []
-    },
-    {
-      "date": "2026-05-19",
-      "verdict": "hands_off",
-      "verdict_label": "初心者手出し無用",
-      "confidence": "low",
-      "futures_diff": 205.7109375,
-      "nasdaq_pct": -0.5125091679084148,
-      "dow_pct": 0.32295897844416555,
-      "sox_pct": -2.467483689281069,
-      "warnings": []
     }
   ],
   "stock_picks": {
-    "available": true,
-    "reason": "1セクターで強い連動シグナル",
-    "picks": [
-      {
-        "sector_name": "SaaS・ソフトウェア",
-        "direction": "bullish",
-        "direction_label": "買い候補",
-        "rationale": "米セールスフォース・MSFT等が平均+1.69%。バックテストで連動が確認されたセクター。指数全体は方向性不明でも、このセクターは買い目線で考えやすい。",
-        "stocks": [
-          "富士通",
-          "NEC",
-          "NRI",
-          "オービック"
-        ],
-        "tickers": []
-      }
-    ]
+    "available": false,
+    "reason": "指数判定が出ているため、本機能は表示しません",
+    "picks": []
   }
 }
