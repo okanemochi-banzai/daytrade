@@ -278,5 +278,16 @@
     "warnings": [
       "🆕 月初営業日 = 月間トレンド形成に注目"
     ]
+  },
+  {
+    "date": "2026-06-02",
+    "verdict": "buy_bias",
+    "verdict_label": "買いポジ主体",
+    "confidence": "medium",
+    "futures_diff": 815.5,
+    "nasdaq_pct": 0.4233532254678707,
+    "dow_pct": 0.09095773140717078,
+    "sox_pct": 1.062167715779938,
+    "warnings": []
   }
 ]
