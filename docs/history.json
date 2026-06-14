@@ -381,5 +381,16 @@
     "warnings": [
       "📅 金曜 × 週足陰線 = ショートカバー買い警戒"
     ]
+  },
+  {
+    "date": "2026-06-15",
+    "verdict": "buy_bias",
+    "verdict_label": "買いポジ主体",
+    "confidence": "medium",
+    "futures_diff": 2374.9609375,
+    "nasdaq_pct": 0.30678314639034365,
+    "dow_pct": 0.695222043314736,
+    "sox_pct": 1.5186592380902253,
+    "warnings": []
   }
 ]
