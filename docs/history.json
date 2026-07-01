@@ -532,5 +532,16 @@
     "warnings": [
       "🆕 月初営業日 = 月間トレンド形成に注目"
     ]
+  },
+  {
+    "date": "2026-07-02",
+    "verdict": "sell_bias",
+    "verdict_label": "売りポジ主体",
+    "confidence": "high",
+    "futures_diff": -262.3203125,
+    "nasdaq_pct": -0.6625898516737228,
+    "dow_pct": -0.02668415745743502,
+    "sox_pct": -6.272781467153732,
+    "warnings": []
   }
 ]
