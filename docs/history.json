@@ -543,5 +543,18 @@
     "dow_pct": -0.02668415745743502,
     "sox_pct": -6.272781467153732,
     "warnings": []
+  },
+  {
+    "date": "2026-07-03",
+    "verdict": "sell_bias",
+    "verdict_label": "売りポジ主体",
+    "confidence": "high",
+    "futures_diff": -1899.9609375,
+    "nasdaq_pct": -0.7963025675239321,
+    "dow_pct": 1.137232236762853,
+    "sox_pct": -5.444793929745284,
+    "warnings": [
+      "📅 金曜 × 週足陽線 = 手仕舞い売り警戒"
+    ]
   }
 ]
