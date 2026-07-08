@@ -589,5 +589,16 @@
     "dow_pct": -0.24646023103722658,
     "sox_pct": -4.648197924819586,
     "warnings": []
+  },
+  {
+    "date": "2026-07-09",
+    "verdict": "hands_off",
+    "verdict_label": "初心者手出し無用",
+    "confidence": "low",
+    "futures_diff": -431.9609375,
+    "nasdaq_pct": 0.20126076003719184,
+    "dow_pct": -1.0897613507519943,
+    "sox_pct": 2.2311843408544973,
+    "warnings": []
   }
 ]
