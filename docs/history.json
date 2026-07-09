@@ -600,5 +600,18 @@
     "dow_pct": -1.0897613507519943,
     "sox_pct": 2.2311843408544973,
     "warnings": []
+  },
+  {
+    "date": "2026-07-10",
+    "verdict": "buy_bias",
+    "verdict_label": "買いポジ主体",
+    "confidence": "high",
+    "futures_diff": 2230.953125,
+    "nasdaq_pct": 1.2996976469398902,
+    "dow_pct": 0.26556600802853936,
+    "sox_pct": 3.061901630758457,
+    "warnings": [
+      "📅 金曜 × 週足陰線 = ショートカバー買い警戒"
+    ]
   }
 ]
