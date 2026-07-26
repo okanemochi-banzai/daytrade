@@ -1,16 +1,5 @@
 [
   {
-    "date": "2026-05-04",
-    "verdict": "hands_off",
-    "verdict_label": "初心者手出し無用",
-    "confidence": "low",
-    "futures_diff": 111.87890625,
-    "nasdaq_pct": 0.8923595334057399,
-    "dow_pct": -0.30788419557691293,
-    "sox_pct": 0.8724511051676487,
-    "warnings": []
-  },
-  {
     "date": "2026-05-05",
     "verdict": "hands_off",
     "verdict_label": "初心者手出し無用",
@@ -689,5 +678,16 @@
     "warnings": [
       "📅 金曜 × 週足陰線 = ショートカバー買い警戒"
     ]
+  },
+  {
+    "date": "2026-07-27",
+    "verdict": "hands_off",
+    "verdict_label": "初心者手出し無用",
+    "confidence": "low",
+    "futures_diff": -802.6015625,
+    "nasdaq_pct": NaN,
+    "dow_pct": NaN,
+    "sox_pct": -0.5384888853357195,
+    "warnings": []
   }
 ]
