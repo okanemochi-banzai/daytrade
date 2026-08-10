@@ -1,16 +1,5 @@
 [
   {
-    "date": "2026-05-19",
-    "verdict": "hands_off",
-    "verdict_label": "初心者手出し無用",
-    "confidence": "low",
-    "futures_diff": 205.7109375,
-    "nasdaq_pct": -0.5125091679084148,
-    "dow_pct": 0.32295897844416555,
-    "sox_pct": -2.467483689281069,
-    "warnings": []
-  },
-  {
     "date": "2026-05-20",
     "verdict": "hands_off",
     "verdict_label": "初心者手出し無用",
@@ -691,6 +680,17 @@
     "nasdaq_pct": 1.2990169643422922,
     "dow_pct": 0.28176271473461245,
     "sox_pct": 2.5571211342259703,
+    "warnings": []
+  },
+  {
+    "date": "2026-08-11",
+    "verdict": "hands_off",
+    "verdict_label": "初心者手出し無用",
+    "confidence": "low",
+    "futures_diff": 1103.2890625,
+    "nasdaq_pct": -0.31944451457188716,
+    "dow_pct": -0.11279178721380623,
+    "sox_pct": -2.937079207384796,
     "warnings": []
   }
 ]
