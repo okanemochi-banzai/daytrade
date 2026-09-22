@@ -1,6 +1,6 @@
 {
   "market": {
-    "timestamp": "2026-09-21T09:20:00.058817+09:00",
+    "timestamp": "2026-09-22T09:57:42.654001+09:00",
     "nikkei": {
       "prev_close": 65018.94921875,
       "change_pct": 1.3762875421466036,
@@ -8,23 +8,23 @@
       "month_is_positive": false
     },
     "nikkei_futures": {
-      "price": 65120.0
+      "price": 66955.0
     },
     "etf_1570": {
       "prev_close": 66860.0
     },
     "us_markets": {
-      "nasdaq_change_pct": 0.3945684550763495,
-      "dow_change_pct": -0.1842449795845802,
-      "sox_change_pct": 2.777709957957142
+      "nasdaq_change_pct": 2.260547853609185,
+      "dow_change_pct": 0.7085309410890916,
+      "sox_change_pct": 4.29033509775012
     },
     "fx_commodities": {
-      "usdjpy_price": 156.968994140625,
-      "usdjpy_change_pct": 0.5328931486981547,
-      "gold_price": 4405.5,
-      "gold_change_pct": -0.43842578977830726,
-      "oil_price": 95.7300033569336,
-      "oil_change_pct": -4.576275002620466
+      "usdjpy_price": 157.3520050048828,
+      "usdjpy_change_pct": 0.19484720758999874,
+      "gold_price": 4394.10009765625,
+      "gold_change_pct": -0.6960565293507859,
+      "oil_price": 92.66000366210938,
+      "oil_change_pct": -7.617147714049388
     },
     "us_sector_changes": {
       "ADBE": -1.4841492963848402,
@@ -68,24 +68,24 @@
       {
         "name": "ドル円",
         "symbol": "USD/JPY",
-        "current": 156.968994140625,
-        "change_pct": 0.5328931486981547,
-        "direction": "up",
-        "interpretation": "円安傾向 → 輸出株にやや追い風"
+        "current": 157.3520050048828,
+        "change_pct": 0.19484720758999874,
+        "direction": "flat",
+        "interpretation": "変動なし"
       },
       {
         "name": "ゴールド",
         "symbol": "XAU/USD",
-        "current": 4405.5,
-        "change_pct": -0.43842578977830726,
+        "current": 4394.10009765625,
+        "change_pct": -0.6960565293507859,
         "direction": "down",
         "interpretation": "ゴールド小幅下落"
       },
       {
         "name": "WTI原油",
         "symbol": "CL",
-        "current": 95.7300033569336,
-        "change_pct": -4.576275002620466,
+        "current": 92.66000366210938,
+        "change_pct": -7.617147714049388,
         "direction": "down",
         "interpretation": "原油急落 → リスクオン転換の可能性、エネルギー株は逆風"
       }
@@ -93,33 +93,33 @@
     "combined_note": null
   },
   "direction": {
-    "verdict": "hands_off",
-    "verdict_label": "初心者手出し無用",
-    "confidence": "low",
+    "verdict": "buy_bias",
+    "verdict_label": "買いポジ主体",
+    "confidence": "high",
     "us_indices": [
       {
         "name": "ナスダック",
-        "change_pct": 0.3945684550763495,
+        "change_pct": 2.260547853609185,
         "direction": "bullish"
       },
       {
         "name": "ダウ",
-        "change_pct": -0.1842449795845802,
-        "direction": "neutral"
+        "change_pct": 0.7085309410890916,
+        "direction": "bullish"
       },
       {
         "name": "SOX",
-        "change_pct": 2.777709957957142,
+        "change_pct": 4.29033509775012,
         "direction": "bullish"
       }
     ],
     "us_consensus_direction": "bullish",
-    "futures_diff": 101.05078125,
-    "futures_aligned": false,
+    "futures_diff": 1936.05078125,
+    "futures_aligned": true,
     "reasons": [
-      "米指数が揃って上げ（ナスダック, SOX）",
-      "先物の方向性が不明確（現対+101円）",
-      "→ 米日非連動のため、方向性読みづらく様子見"
+      "米指数が揃って上げ（ナスダック, ダウ, SOX）",
+      "日経先物が米に追随（現対+1936円）",
+      "→ 米日連動の上昇相場として買い目線"
     ]
   },
   "kiriban": {
@@ -135,13 +135,13 @@
       }
     },
     "sayatori_signal": {
-      "futures_price": 65120.0,
+      "futures_price": 66955.0,
       "spot_price": 65018.94921875,
-      "diff": 101.05078125,
-      "abs_diff": 101.05078125,
-      "direction": "neutral",
+      "diff": 1936.05078125,
+      "abs_diff": 1936.05078125,
+      "direction": "short",
       "threshold": 1000,
-      "rationale": "現対+101円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
+      "rationale": "現対+1,936円。先物が現物より1,936円高い。鞘が閉じる方向（先物売り）を朝一で狙う。"
     },
     "round_number_levels": {
       "current_price": 65018.94921875,
@@ -149,8 +149,8 @@
       "support": 65000.0,
       "step": 1000
     },
-    "high_volatility": false,
-    "kiriban_effective": false
+    "high_volatility": true,
+    "kiriban_effective": true
   },
   "sectors": [
     {
@@ -339,6 +339,17 @@
   ],
   "recent_history": [
     {
+      "date": "2026-09-22",
+      "verdict": "buy_bias",
+      "verdict_label": "買いポジ主体",
+      "confidence": "high",
+      "futures_diff": 1936.05078125,
+      "nasdaq_pct": 2.260547853609185,
+      "dow_pct": 0.7085309410890916,
+      "sox_pct": 4.29033509775012,
+      "warnings": []
+    },
+    {
       "date": "2026-09-21",
       "verdict": "hands_off",
       "verdict_label": "初心者手出し無用",
@@ -383,59 +394,11 @@
       "dow_pct": -0.6258724497715251,
       "sox_pct": 0.3976775400052812,
       "warnings": []
-    },
-    {
-      "date": "2026-09-15",
-      "verdict": "hands_off",
-      "verdict_label": "初心者手出し無用",
-      "confidence": "low",
-      "futures_diff": -145.51171875,
-      "nasdaq_pct": -0.5568100197322234,
-      "dow_pct": -0.28929109527310315,
-      "sox_pct": -5.858582121109612,
-      "warnings": []
     }
   ],
   "stock_picks": {
-    "available": true,
-    "reason": "3セクターで強い連動シグナル",
-    "picks": [
-      {
-        "sector_name": "ストレージ半導体",
-        "direction": "bullish",
-        "direction_label": "買い候補",
-        "rationale": "米サンディスク等ストレージが平均+7.35%。バックテストで連動が確認されたセクター。指数全体は方向性不明でも、このセクターは買い目線で考えやすい。",
-        "stocks": [
-          "キオクシア"
-        ],
-        "tickers": []
-      },
-      {
-        "sector_name": "半導体",
-        "direction": "bullish",
-        "direction_label": "買い候補",
-        "rationale": "米SOX指数（半導体）が平均+4.45%。バックテストで連動が確認されたセクター。指数全体は方向性不明でも、このセクターは買い目線で考えやすい。",
-        "stocks": [
-          "東京エレクトロン",
-          "アドバンテスト",
-          "ディスコ",
-          "レーザーテック"
-        ],
-        "tickers": []
-      },
-      {
-        "sector_name": "SaaS・ソフトウェア",
-        "direction": "bearish",
-        "direction_label": "売り（空売り）候補",
-        "rationale": "米セールスフォース・MSFT等が平均-1.94%。バックテストで連動が確認されたセクター。指数全体は方向性不明でも、このセクターは売り目線で考えやすい。",
-        "stocks": [
-          "富士通",
-          "NEC",
-          "NRI",
-          "オービック"
-        ],
-        "tickers": []
-      }
-    ]
+    "available": false,
+    "reason": "指数判定が出ているため、本機能は表示しません",
+    "picks": []
   }
 }

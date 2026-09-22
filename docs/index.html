@@ -211,7 +211,7 @@ section > h2.section-title {
   <header>
     <h1>📊 Daytrade Signal Board</h1>
     <div class="header-right">
-      <div class="timestamp">Updated: 2026-09-21 09:20 JST</div>
+      <div class="timestamp">Updated: 2026-09-22 09:57 JST</div>
       <a href="./backtest_report.html" class="report-link">🧪 バックテスト検証レポート →</a>
     </div>
   </header>
@@ -225,11 +225,11 @@ section > h2.section-title {
         本日の日経デイトレ方針
       </h2>
       
-    <div style="background: rgba(107, 114, 128, 0.15); color: var(--neutral); padding: 16px 20px; border-radius: 12px; display: inline-flex; align-items: center; gap: 12px;">
-      <div style="font-size: 32px;">⏸️</div>
+    <div style="background: rgba(16, 185, 129, 0.15); color: var(--long); padding: 16px 20px; border-radius: 12px; display: inline-flex; align-items: center; gap: 12px;">
+      <div style="font-size: 32px;">📈</div>
       <div>
-        <div style="font-size: 24px; font-weight: 700;">初心者手出し無用</div>
-        <div style="font-size: 12px; opacity: 0.8; margin-top: 2px;">確度:低</div>
+        <div style="font-size: 24px; font-weight: 700;">買いポジ主体</div>
+        <div style="font-size: 12px; opacity: 0.8; margin-top: 2px;">確度:高</div>
       </div>
     </div>
     
@@ -241,32 +241,32 @@ section > h2.section-title {
             
         <div class="us-idx-item">
           <div class="us-idx-name">ナスダック</div>
-          <div class="us-idx-pct" style="color: var(--long);">+0.39%</div>
+          <div class="us-idx-pct" style="color: var(--long);">+2.26%</div>
         </div>
         
         <div class="us-idx-item">
           <div class="us-idx-name">ダウ</div>
-          <div class="us-idx-pct" style="color: var(--muted);">-0.18%</div>
+          <div class="us-idx-pct" style="color: var(--long);">+0.71%</div>
         </div>
         
         <div class="us-idx-item">
           <div class="us-idx-name">SOX</div>
-          <div class="us-idx-pct" style="color: var(--long);">+2.78%</div>
+          <div class="us-idx-pct" style="color: var(--long);">+4.29%</div>
         </div>
         
           </div>
         </div>
         <div class="direction-meta-item">
           <div class="direction-meta-label">日経先物 現対</div>
-          <div class="futures-value" style="color: var(--muted);">+101円</div>
+          <div class="futures-value" style="color: var(--long);">+1,936円</div>
           <div class="sub" style="font-size: 12px;">
-            先物: ¥65,120 / 現物終値: ¥65,019
+            先物: ¥66,955 / 現物終値: ¥65,019
           </div>
         </div>
       </div>
 
       <div class="reasons-list">
-        <ul><li>米指数が揃って上げ（ナスダック, SOX）</li><li>先物の方向性が不明確（現対+101円）</li><li>→ 米日非連動のため、方向性読みづらく様子見</li></ul>
+        <ul><li>米指数が揃って上げ（ナスダック, ダウ, SOX）</li><li>日経先物が米に追随（現対+1936円）</li><li>→ 米日連動の上昇相場として買い目線</li></ul>
       </div>
 
       <div class="time-nodes-note">
@@ -287,10 +287,10 @@ section > h2.section-title {
             <span class="fx-symbol">USD/JPY</span>
           </div>
           <div class="fx-price-row">
-            <span class="fx-price">156.97</span>
-            <span class="fx-change" style="color: var(--long);">▲ +0.53%</span>
+            <span class="fx-price">157.35</span>
+            <span class="fx-change" style="color: var(--muted);">━ +0.19%</span>
           </div>
-          <div class="fx-interpretation">円安傾向 → 輸出株にやや追い風</div>
+          <div class="fx-interpretation">変動なし</div>
         </div>
         
         <div class="fx-item">
@@ -299,8 +299,8 @@ section > h2.section-title {
             <span class="fx-symbol">XAU/USD</span>
           </div>
           <div class="fx-price-row">
-            <span class="fx-price">$4,405.5</span>
-            <span class="fx-change" style="color: var(--short);">▼ -0.44%</span>
+            <span class="fx-price">$4,394.1</span>
+            <span class="fx-change" style="color: var(--short);">▼ -0.70%</span>
           </div>
           <div class="fx-interpretation">ゴールド小幅下落</div>
         </div>
@@ -311,8 +311,8 @@ section > h2.section-title {
             <span class="fx-symbol">CL</span>
           </div>
           <div class="fx-price-row">
-            <span class="fx-price">$95.73</span>
-            <span class="fx-change" style="color: var(--short);">▼ -4.58%</span>
+            <span class="fx-price">$92.66</span>
+            <span class="fx-change" style="color: var(--short);">▼ -7.62%</span>
           </div>
           <div class="fx-interpretation">原油急落 → リスクオン転換の可能性、エネルギー株は逆風</div>
         </div>
@@ -323,51 +323,6 @@ section > h2.section-title {
     
 
   
-    <section>
-      <h2 class="section-title">💡 個別銘柄の方向感（指数手出し無用日）</h2>
-      <div class="picks-grid">
-        
-        <div class="pick-card pick-bullish">
-          <div class="pick-header">
-            <div class="pick-title">
-              ▲ <b>ストレージ半導体</b>
-            </div>
-            <span class="pick-badge pick-badge-bullish">買い候補</span>
-          </div>
-          <ul class="pick-stocks"></ul>
-          <div class="pick-rationale">米サンディスク等ストレージが平均+7.35%。バックテストで連動が確認されたセクター。指数全体は方向性不明でも、このセクターは買い目線で考えやすい。</div>
-        </div>
-        
-        <div class="pick-card pick-bullish">
-          <div class="pick-header">
-            <div class="pick-title">
-              ▲ <b>半導体</b>
-            </div>
-            <span class="pick-badge pick-badge-bullish">買い候補</span>
-          </div>
-          <ul class="pick-stocks"></ul>
-          <div class="pick-rationale">米SOX指数（半導体）が平均+4.45%。バックテストで連動が確認されたセクター。指数全体は方向性不明でも、このセクターは買い目線で考えやすい。</div>
-        </div>
-        
-        <div class="pick-card pick-bearish">
-          <div class="pick-header">
-            <div class="pick-title">
-              ▼ <b>SaaS・ソフトウェア</b>
-            </div>
-            <span class="pick-badge pick-badge-bearish">売り（空売り）候補</span>
-          </div>
-          <ul class="pick-stocks"></ul>
-          <div class="pick-rationale">米セールスフォース・MSFT等が平均-1.94%。バックテストで連動が確認されたセクター。指数全体は方向性不明でも、このセクターは売り目線で考えやすい。</div>
-        </div>
-        
-      </div>
-      <div class="picks-disclaimer">
-        ⚠️ これは推奨ではなく、過去の連動データに基づく <b>該当銘柄の参考表示</b> です。
-        個別銘柄の決算・材料・需給は別途確認してください。指数全体は方向感がない日のため、
-        ポジションサイズは控えめにし、損切りラインを明確に。
-      </div>
-    </section>
-    
 
   
     <section>
@@ -620,6 +575,16 @@ section > h2.section-title {
         </thead>
         <tbody>
         <tr>
+          <td>9/22(火)</td>
+          <td><span class="hist-badge hist-buy">📈 買いポジ主体</span></td>
+          <td class="num"><span style="color: var(--muted);">高</span></td>
+          <td class="num">+2.26%</td>
+          <td class="num">+0.71%</td>
+          <td class="num">+4.29%</td>
+          <td class="num">+1,936</td>
+        </tr>
+        
+        <tr>
           <td>9/21(月)</td>
           <td><span class="hist-badge hist-handsoff">⏸️ 初心者手出し無用</span></td>
           <td class="num"><span style="color: var(--muted);">低</span></td>
@@ -657,16 +622,6 @@ section > h2.section-title {
           <td class="num">-0.63%</td>
           <td class="num">+0.40%</td>
           <td class="num">-49</td>
-        </tr>
-        
-        <tr>
-          <td>9/15(火)</td>
-          <td><span class="hist-badge hist-handsoff">⏸️ 初心者手出し無用</span></td>
-          <td class="num"><span style="color: var(--muted);">低</span></td>
-          <td class="num">-0.56%</td>
-          <td class="num">-0.29%</td>
-          <td class="num">-5.86%</td>
-          <td class="num">-146</td>
         </tr>
         </tbody>
       </table>
