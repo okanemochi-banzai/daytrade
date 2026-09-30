@@ -1,30 +1,30 @@
 {
   "market": {
-    "timestamp": "2026-09-29T11:06:42.695083+09:00",
+    "timestamp": "2026-09-30T10:21:57.315843+09:00",
     "nikkei": {
-      "prev_close": 65273.9296875,
-      "change_pct": -0.9163772549359073,
+      "prev_close": 66150.1796875,
+      "change_pct": 0.4137406779972652,
       "week_is_positive": true,
-      "month_is_positive": false
+      "month_is_positive": true
     },
     "nikkei_futures": {
-      "price": 65450.0
+      "price": 66465.0
     },
     "etf_1570": {
-      "prev_close": 67920.0
+      "prev_close": 69740.0
     },
     "us_markets": {
-      "nasdaq_change_pct": -0.917442115102729,
-      "dow_change_pct": -0.6697252747128513,
-      "sox_change_pct": -1.6077796750539441
+      "nasdaq_change_pct": -0.08515853622569347,
+      "dow_change_pct": -0.25560602118464004,
+      "sox_change_pct": 1.3150239815311382
     },
     "fx_commodities": {
-      "usdjpy_price": 157.4510040283203,
-      "usdjpy_change_pct": -0.007616651783837192,
-      "gold_price": 4166.2001953125,
-      "gold_change_pct": -3.586966421230353,
-      "oil_price": 93.5999984741211,
-      "oil_change_pct": 1.2985574079510842
+      "usdjpy_price": 156.86399841308594,
+      "usdjpy_change_pct": -0.31583050594358175,
+      "gold_price": 4206.39990234375,
+      "gold_change_pct": -2.656676103395572,
+      "oil_price": 89.47000122070312,
+      "oil_change_pct": -3.3909281224512866
     },
     "us_sector_changes": {
       "ADBE": -1.894087013524448,
@@ -62,35 +62,43 @@
       "XOM": 1.2018232633304704
     }
   },
-  "warnings": [],
+  "warnings": [
+    {
+      "type": "month_end",
+      "severity": "high",
+      "label": "🗓️ 月末 × 月足陽線 = 大きな手仕舞い売り警戒",
+      "message": "今月の日経は陽線。月末にロングカバーの売りが入りやすく、週足手仕舞いより強い。",
+      "action": "月末近くの大引けにかけての下げを警戒。長期玉でもボラが大きくなるので、逆指値を引き締めておく。"
+    }
+  ],
   "market_context": {
     "items": [
       {
         "name": "ドル円",
         "symbol": "USD/JPY",
-        "current": 157.4510040283203,
-        "change_pct": -0.007616651783837192,
-        "direction": "flat",
-        "interpretation": "変動なし"
+        "current": 156.86399841308594,
+        "change_pct": -0.31583050594358175,
+        "direction": "down",
+        "interpretation": "円高傾向 → 輸出株にやや逆風"
       },
       {
         "name": "ゴールド",
         "symbol": "XAU/USD",
-        "current": 4166.2001953125,
-        "change_pct": -3.586966421230353,
+        "current": 4206.39990234375,
+        "change_pct": -2.656676103395572,
         "direction": "down",
         "interpretation": "ゴールド下落 → リスクオン転換の可能性"
       },
       {
         "name": "WTI原油",
         "symbol": "CL",
-        "current": 93.5999984741211,
-        "change_pct": 1.2985574079510842,
-        "direction": "up",
-        "interpretation": "原油上昇 → エネルギー株に追い風"
+        "current": 89.47000122070312,
+        "change_pct": -3.3909281224512866,
+        "direction": "down",
+        "interpretation": "原油急落 → リスクオン転換の可能性、エネルギー株は逆風"
       }
     ],
-    "combined_note": null
+    "combined_note": "✅ ゴールド & 原油の同時下落 → リスクオン転換の可能性。"
   },
   "direction": {
     "verdict": "hands_off",
@@ -99,54 +107,54 @@
     "us_indices": [
       {
         "name": "ナスダック",
-        "change_pct": -0.917442115102729,
-        "direction": "bearish"
+        "change_pct": -0.08515853622569347,
+        "direction": "neutral"
       },
       {
         "name": "ダウ",
-        "change_pct": -0.6697252747128513,
-        "direction": "bearish"
+        "change_pct": -0.25560602118464004,
+        "direction": "neutral"
       },
       {
         "name": "SOX",
-        "change_pct": -1.6077796750539441,
-        "direction": "bearish"
+        "change_pct": 1.3150239815311382,
+        "direction": "bullish"
       }
     ],
-    "us_consensus_direction": "bearish",
-    "futures_diff": 176.0703125,
+    "us_consensus_direction": "neutral",
+    "futures_diff": 314.8203125,
     "futures_aligned": false,
     "reasons": [
-      "米指数が揃って下げ（ナスダック, ダウ, SOX）",
-      "先物の方向性が不明確（現対+176円）",
-      "→ 米日非連動のため、方向性読みづらく様子見"
+      "米指数に個体差あり（ナスダック=-0.09% / ダウ=-0.26% / SOX+）",
+      "先物の方向性が不明確（現対+315円）",
+      "→ 米指数の個体差が大きく、レンジ・優柔不断相場想定"
     ]
   },
   "kiriban": {
     "kiriban_bands": {
-      "prev_close": 65273.9296875,
+      "prev_close": 66150.1796875,
       "bands": {
-        "-1500": 63773.9296875,
-        "-1000": 64273.9296875,
-        "-500": 64773.9296875,
-        "+500": 65773.9296875,
-        "+1000": 66273.9296875,
-        "+1500": 66773.9296875
+        "-1500": 64650.1796875,
+        "-1000": 65150.1796875,
+        "-500": 65650.1796875,
+        "+500": 66650.1796875,
+        "+1000": 67150.1796875,
+        "+1500": 67650.1796875
       }
     },
     "sayatori_signal": {
-      "futures_price": 65450.0,
-      "spot_price": 65273.9296875,
-      "diff": 176.0703125,
-      "abs_diff": 176.0703125,
+      "futures_price": 66465.0,
+      "spot_price": 66150.1796875,
+      "diff": 314.8203125,
+      "abs_diff": 314.8203125,
       "direction": "neutral",
       "threshold": 1000,
-      "rationale": "現対+176円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
+      "rationale": "現対+315円（しきい値±1,000円未満）。鞘取り不要。ハイボラ時のみ機能する戦略のため様子見。"
     },
     "round_number_levels": {
-      "current_price": 65273.9296875,
-      "resistance": 66000.0,
-      "support": 65000.0,
+      "current_price": 66150.1796875,
+      "resistance": 67000.0,
+      "support": 66000.0,
       "step": 1000
     },
     "high_volatility": false,
@@ -339,6 +347,19 @@
   ],
   "recent_history": [
     {
+      "date": "2026-09-30",
+      "verdict": "hands_off",
+      "verdict_label": "初心者手出し無用",
+      "confidence": "low",
+      "futures_diff": 314.8203125,
+      "nasdaq_pct": -0.08515853622569347,
+      "dow_pct": -0.25560602118464004,
+      "sox_pct": 1.3150239815311382,
+      "warnings": [
+        "🗓️ 月末 × 月足陽線 = 大きな手仕舞い売り警戒"
+      ]
+    },
+    {
       "date": "2026-09-29",
       "verdict": "hands_off",
       "verdict_label": "初心者手出し無用",
@@ -382,17 +403,6 @@
       "nasdaq_pct": -0.6859822950474936,
       "dow_pct": -1.032181320124581,
       "sox_pct": 0.813183547098606,
-      "warnings": []
-    },
-    {
-      "date": "2026-09-23",
-      "verdict": "buy_bias",
-      "verdict_label": "買いポジ主体",
-      "confidence": "medium",
-      "futures_diff": 1976.05078125,
-      "nasdaq_pct": 0.4505091632094782,
-      "dow_pct": -0.3556981500243861,
-      "sox_pct": 2.064239387362088,
       "warnings": []
     }
   ],

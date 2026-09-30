@@ -211,12 +211,24 @@ section > h2.section-title {
   <header>
     <h1>📊 Daytrade Signal Board</h1>
     <div class="header-right">
-      <div class="timestamp">Updated: 2026-09-29 11:06 JST</div>
+      <div class="timestamp">Updated: 2026-09-30 10:21 JST</div>
       <a href="./backtest_report.html" class="report-link">🧪 バックテスト検証レポート →</a>
     </div>
   </header>
 
   
+    <section>
+      <div class="warnings-wrap">
+        
+        <div class="warning-item" style="border-left-color: var(--short); background: rgba(239, 68, 68, 0.08);">
+          <div style="font-size: 15px; margin-bottom: 4px; color: var(--short); font-weight: 600;">🗓️ 月末 × 月足陽線 = 大きな手仕舞い売り警戒</div>
+          <div class="warning-message">今月の日経は陽線。月末にロングカバーの売りが入りやすく、週足手仕舞いより強い。</div>
+          <div class="warning-action">→ 月末近くの大引けにかけての下げを警戒。長期玉でもボラが大きくなるので、逆指値を引き締めておく。</div>
+        </div>
+        
+      </div>
+    </section>
+    
 
   <!-- 本日の日経デイトレ方針 -->
   <section>
@@ -241,32 +253,32 @@ section > h2.section-title {
             
         <div class="us-idx-item">
           <div class="us-idx-name">ナスダック</div>
-          <div class="us-idx-pct" style="color: var(--short);">-0.92%</div>
+          <div class="us-idx-pct" style="color: var(--muted);">-0.09%</div>
         </div>
         
         <div class="us-idx-item">
           <div class="us-idx-name">ダウ</div>
-          <div class="us-idx-pct" style="color: var(--short);">-0.67%</div>
+          <div class="us-idx-pct" style="color: var(--muted);">-0.26%</div>
         </div>
         
         <div class="us-idx-item">
           <div class="us-idx-name">SOX</div>
-          <div class="us-idx-pct" style="color: var(--short);">-1.61%</div>
+          <div class="us-idx-pct" style="color: var(--long);">+1.32%</div>
         </div>
         
           </div>
         </div>
         <div class="direction-meta-item">
           <div class="direction-meta-label">日経先物 現対</div>
-          <div class="futures-value" style="color: var(--muted);">+176円</div>
+          <div class="futures-value" style="color: var(--long);">+315円</div>
           <div class="sub" style="font-size: 12px;">
-            先物: ¥65,450 / 現物終値: ¥65,274
+            先物: ¥66,465 / 現物終値: ¥66,150
           </div>
         </div>
       </div>
 
       <div class="reasons-list">
-        <ul><li>米指数が揃って下げ（ナスダック, ダウ, SOX）</li><li>先物の方向性が不明確（現対+176円）</li><li>→ 米日非連動のため、方向性読みづらく様子見</li></ul>
+        <ul><li>米指数に個体差あり（ナスダック=-0.09% / ダウ=-0.26% / SOX+）</li><li>先物の方向性が不明確（現対+315円）</li><li>→ 米指数の個体差が大きく、レンジ・優柔不断相場想定</li></ul>
       </div>
 
       <div class="time-nodes-note">
@@ -287,10 +299,10 @@ section > h2.section-title {
             <span class="fx-symbol">USD/JPY</span>
           </div>
           <div class="fx-price-row">
-            <span class="fx-price">157.45</span>
-            <span class="fx-change" style="color: var(--muted);">━ -0.01%</span>
+            <span class="fx-price">156.86</span>
+            <span class="fx-change" style="color: var(--short);">▼ -0.32%</span>
           </div>
-          <div class="fx-interpretation">変動なし</div>
+          <div class="fx-interpretation">円高傾向 → 輸出株にやや逆風</div>
         </div>
         
         <div class="fx-item">
@@ -299,8 +311,8 @@ section > h2.section-title {
             <span class="fx-symbol">XAU/USD</span>
           </div>
           <div class="fx-price-row">
-            <span class="fx-price">$4,166.2</span>
-            <span class="fx-change" style="color: var(--short);">▼ -3.59%</span>
+            <span class="fx-price">$4,206.4</span>
+            <span class="fx-change" style="color: var(--short);">▼ -2.66%</span>
           </div>
           <div class="fx-interpretation">ゴールド下落 → リスクオン転換の可能性</div>
         </div>
@@ -311,14 +323,18 @@ section > h2.section-title {
             <span class="fx-symbol">CL</span>
           </div>
           <div class="fx-price-row">
-            <span class="fx-price">$93.60</span>
-            <span class="fx-change" style="color: var(--long);">▲ +1.30%</span>
+            <span class="fx-price">$89.47</span>
+            <span class="fx-change" style="color: var(--short);">▼ -3.39%</span>
           </div>
-          <div class="fx-interpretation">原油上昇 → エネルギー株に追い風</div>
+          <div class="fx-interpretation">原油急落 → リスクオン転換の可能性、エネルギー株は逆風</div>
         </div>
         
       </div>
       
+        <div class="fx-combined">
+          ✅ ゴールド & 原油の同時下落 → リスクオン転換の可能性。
+        </div>
+        
     </section>
     
 
@@ -598,6 +614,16 @@ section > h2.section-title {
         </thead>
         <tbody>
         <tr>
+          <td>9/30(水)</td>
+          <td><span class="hist-badge hist-handsoff">⏸️ 初心者手出し無用</span></td>
+          <td class="num"><span style="color: var(--muted);">低</span></td>
+          <td class="num">-0.09%</td>
+          <td class="num">-0.26%</td>
+          <td class="num">+1.32%</td>
+          <td class="num">+315</td>
+        </tr>
+        
+        <tr>
           <td>9/29(火)</td>
           <td><span class="hist-badge hist-handsoff">⏸️ 初心者手出し無用</span></td>
           <td class="num"><span style="color: var(--muted);">低</span></td>
@@ -635,16 +661,6 @@ section > h2.section-title {
           <td class="num">-1.03%</td>
           <td class="num">+0.81%</td>
           <td class="num">+12</td>
-        </tr>
-        
-        <tr>
-          <td>9/23(水)</td>
-          <td><span class="hist-badge hist-buy">📈 買いポジ主体</span></td>
-          <td class="num"><span style="color: var(--muted);">中</span></td>
-          <td class="num">+0.45%</td>
-          <td class="num">-0.36%</td>
-          <td class="num">+2.06%</td>
-          <td class="num">+1,976</td>
         </tr>
         </tbody>
       </table>
