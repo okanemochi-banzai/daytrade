@@ -1,16 +1,5 @@
 [
   {
-    "date": "2026-07-16",
-    "verdict": "hands_off",
-    "verdict_label": "初心者手出し無用",
-    "confidence": "low",
-    "futures_diff": 131.5,
-    "nasdaq_pct": 0.6213534155435463,
-    "dow_pct": 0.2863760224673051,
-    "sox_pct": -2.077377929780899,
-    "warnings": []
-  },
-  {
     "date": "2026-07-17",
     "verdict": "sell_bias",
     "verdict_label": "売りポジ主体",
@@ -692,6 +681,17 @@
     "nasdaq_pct": 0.4460995979424176,
     "dow_pct": 0.49423288299772494,
     "sox_pct": 0.3422447190968958,
+    "warnings": []
+  },
+  {
+    "date": "2026-10-08",
+    "verdict": "hands_off",
+    "verdict_label": "初心者手出し無用",
+    "confidence": "low",
+    "futures_diff": 131.03125,
+    "nasdaq_pct": -0.2213700116027839,
+    "dow_pct": -0.6626585130780294,
+    "sox_pct": -1.1474728423571112,
     "warnings": []
   }
 ]
